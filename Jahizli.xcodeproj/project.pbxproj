@@ -15,6 +15,7 @@
 		150C2D4A1F816B91000C2891 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 150C2D481F816B91000C2891 /* LaunchScreen.storyboard */; };
 		150C2D551F816B91000C2891 /* JahizliTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D541F816B91000C2891 /* JahizliTests.swift */; };
 		150C2D601F816B92000C2891 /* JahizliUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D5F1F816B92000C2891 /* JahizliUITests.swift */; };
+		15379D371F8BF84C0075EDDB /* FKMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15379D361F8BF84C0075EDDB /* FKMenuItem.swift */; };
 		15ED3EF61F82B3E10073FE51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15ED3EF51F82B3E10073FE51 /* GoogleService-Info.plist */; };
 		25FB7F7126577DEB15C56B2F /* Pods_JahizliTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A070E1AFA56E508DA2C333C /* Pods_JahizliTests.framework */; };
 		B98C98C8A5119BD104A55331 /* Pods_JahizliUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFDE9DCEAE523C00D625FCD1 /* Pods_JahizliUITests.framework */; };
@@ -54,6 +55,7 @@
 		150C2D5B1F816B91000C2891 /* JahizliUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JahizliUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		150C2D5F1F816B92000C2891 /* JahizliUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JahizliUITests.swift; sourceTree = "<group>"; };
 		150C2D611F816B92000C2891 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		15379D361F8BF84C0075EDDB /* FKMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKMenuItem.swift; sourceTree = "<group>"; };
 		15ED3EF51F82B3E10073FE51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		3500145ADD346F0A8BCF21C8 /* Pods-JahizliUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JahizliUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JahizliUITests/Pods-JahizliUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4028BF100EFB7DF9520F382A /* Pods-JahizliUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JahizliUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-JahizliUITests/Pods-JahizliUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 		150C2D3B1F816B91000C2891 /* Jahizli */ = {
 			isa = PBXGroup;
 			children = (
+				15379D351F8BF8150075EDDB /* Model Classes */,
 				15ED3EF51F82B3E10073FE51 /* GoogleService-Info.plist */,
 				150C2D3C1F816B91000C2891 /* AppDelegate.swift */,
 				150C2D3E1F816B91000C2891 /* ViewController.swift */,
@@ -146,6 +149,14 @@
 				150C2D611F816B92000C2891 /* Info.plist */,
 			);
 			path = JahizliUITests;
+			sourceTree = "<group>";
+		};
+		15379D351F8BF8150075EDDB /* Model Classes */ = {
+			isa = PBXGroup;
+			children = (
+				15379D361F8BF84C0075EDDB /* FKMenuItem.swift */,
+			);
+			path = "Model Classes";
 			sourceTree = "<group>";
 		};
 		98928F2625FDB03DE2883F01 /* Frameworks */ = {
@@ -453,6 +464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15379D371F8BF84C0075EDDB /* FKMenuItem.swift in Sources */,
 				150C2D3F1F816B91000C2891 /* ViewController.swift in Sources */,
 				150C2D3D1F816B91000C2891 /* AppDelegate.swift in Sources */,
 				150C2D451F816B91000C2891 /* Jahizli.xcdatamodeld in Sources */,

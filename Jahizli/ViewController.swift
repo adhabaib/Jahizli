@@ -14,6 +14,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Second commmit of project!")
         
+        
+        // Debuging Model Classes
+        let item:FKMenuItem = FKMenuItem()
+        item.uploadItemToFirebase()
+        
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 

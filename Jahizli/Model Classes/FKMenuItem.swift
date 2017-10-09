@@ -27,13 +27,40 @@ class FKMenuItem: NSObject {
     // public notification tags
     let NOTIFICATION_UPLOAD = "FKMenuItem_Single_Uploaded"
     
+    // Firebase Storage Methods
+    func uploadImageToFireBaseStorage(){
+        
+        // Get a reference to the storage service using the default Firebase App
+        let storage = Storage.storage()
+        
+        // Create a storage reference from our storage service
+        let storageRef = storage.reference()
+       
+        // Child references can also take paths delimited by '/'
+        let itemImageRef = storageRef.child("FKMenuItemimages/\(self.id).png")
+  
+        // Upload the file to the path
+        let uploadTask = itemImageRef.putData(self.itemImage, metadata: nil) { (metadata, error) in
+            guard metadata != nil else {
+                print("\n*** FKMenuItem: Failed to upload meta data ***\n")
+                return
+            }
+        }
+        
+        // Add a progress observer to an upload task
+        _ = uploadTask.observe(.progress) { snapshot in
+            // A progress event occured
+            print("PROGRESS")
+           // print("\n*** FKMenuitem: Uploading ItemImage (\(progress_string)) ***\n")
+            
+        }
+        
+    }
+  
     
-    
-    
-    // Firebase Methods
-    
+    // Firebase Realtime-Database Methods
     // (A) Uploading Single FKMenuItem to Real-time Database
-    func uploadItemToFirebase(){
+    func uploadItemToFirebaseDB(){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
@@ -47,12 +74,10 @@ class FKMenuItem: NSObject {
             "itemName_ar" : self.itemName_ar,
             "itemInfo_en" : self.itemInfo_en,
             "itemInfo_ar" : self.itemInfo_ar,
-            "itemImage" : "IMG" ,
             "itemPrice" : String(self.itemPrice),
             "itemCategory" : self.itemCategory
         ]
-        
-        
+
         // Save Object to Real-time Database
         
         itemRef.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in

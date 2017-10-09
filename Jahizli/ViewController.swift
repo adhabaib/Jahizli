@@ -17,7 +17,9 @@ class ViewController: UIViewController {
         
         // Debuging Model Classes
         let item:FKMenuItem = FKMenuItem()
-        item.uploadItemToFirebase()
+        item.itemImage = Data()
+        item.uploadItemToFirebaseDB()
+        item.uploadImageToFireBaseStorage()
         
         
         

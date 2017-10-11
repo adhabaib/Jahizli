@@ -17,9 +17,11 @@ class ViewController: UIViewController {
         
         // Debuging Model Classes
         let item:FKMenuItem = FKMenuItem()
-        item.itemImage = Data()
+        let img = UIImage(named: "FKMenuItem")
+        item.itemImage = UIImageJPEGRepresentation(img!, 1.0)
         item.uploadItemToFirebaseDB()
         item.uploadImageToFireBaseStorage()
+        item.observeFetchItem(id: "-Kw1fsHaQmT9njsYlslY")
         
         
         

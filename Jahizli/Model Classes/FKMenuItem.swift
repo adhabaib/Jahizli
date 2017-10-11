@@ -22,14 +22,15 @@ class FKMenuItem: NSObject {
     var itemPrice: Double = 0.0
     var itemCategory = "?"
 
-    
-    
     // public notification tags
     let NOTIFICATION_UPLOAD = "FKMenuItem_Single_Uploaded"
-    let NOTIFICATION_OBSERVE_EMPTY = "FkMenuItem_Observe_Empty"
-    let NOTIFICATION_OBSERVE = "FkMenuItem_Observe_Done"
+    let NOTIFICATION_OBSERVE_EMPTY = "FKMenuItem_Observe_Empty"
+    let NOTIFICATION_OBSERVE = "FKMenuItem_Observe_Done"
+    let NOTIFICATION_IMG_UPLOAD = "FKMenuItem_Image_Uploaded"
+    let NOTIFICATION_IMG_DOWN = "FKMenuItem_Image_Downloaded"
     
     // Firebase Storage Methods
+    // (A) Upload Item Image to FireBase Storage
     func uploadImageToFireBaseStorage(){
         
         // Get a reference to the storage service using the default Firebase App
@@ -57,6 +58,37 @@ class FKMenuItem: NSObject {
             
         }
         
+    }
+    
+    //(B) Fetching Item Image from Firebase Storage
+    func fetchImageFromFirebaseStorage(id: String){
+       
+        // Get a reference to the storage service using the default Firebase App
+        let storage = Storage.storage()
+        
+        // Create a storage reference from our storage service
+        let storageRef = storage.reference()
+        
+        // Create a reference to the file you want to download
+        let itemRef = storageRef.child("FKMenuItemimages/\(id).jpeg")
+        
+        // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+        itemRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+            if let error = error {
+                // Uh-oh, an error occurred!
+                print("/n*** FKMenuItem: Item Image could not be found/fetched!")
+                
+            } else {
+                // Data for "images/island.jpg" is returned
+                print("/n*** FKMenuItem: Item Image found/fetched!")
+                self.itemImage = data!
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_DOWN), object: nil)
+                }
+            }
+            
+           
+        }
     }
   
     
@@ -105,7 +137,7 @@ class FKMenuItem: NSObject {
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
             
-            // No Case Found Return Failed to Find
+            // No Item Found Return Failed to Find
             if(postDict == nil){
                 print("\n*** FKMenuItem: Item was not found/empty. ***\n")
                 
@@ -166,7 +198,7 @@ class FKMenuItem: NSObject {
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
             
-            // No Case Found Return Failed to Find
+            // No Item Found Return Failed to Find
             if(postDict == nil){
                 print("\n*** FKMenuItem: Item was not found/empty. ***\n")
                 
@@ -230,8 +262,21 @@ class FKMenuItem: NSObject {
     // Helper Methods
     
     func print_item(){
+        let item = [
+            "id" : self.id,
+            "itemName_en" : self.itemName_en,
+            "itemName_ar" : self.itemName_ar,
+            "itemInfo_en" : self.itemInfo_en,
+            "itemInfo_ar" : self.itemInfo_ar,
+            "itemPrice" : String(self.itemPrice),
+            "itemCategory" : self.itemCategory
+        ]
         
-        print("/n*** FKMenuItem: itemCategory:\(self.itemCategory)")
+        print("/n*** FKMenuItem:\n")
+        print(item)
+        print("\n***")
+        
+      
         
     }
     

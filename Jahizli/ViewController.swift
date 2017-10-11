@@ -8,21 +8,29 @@
 
 import UIKit
 
-class ViewController: UIViewController {
 
+class ViewController: UIViewController {
+    @IBOutlet weak var imageView: UIImageView!
+   
+    var item:FKMenuItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Second commmit of project!")
         
         
+        
         // Debuging Model Classes
-        let item:FKMenuItem = FKMenuItem()
+        item = FKMenuItem()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateImageViewFKMenuItem), name: Notification.Name(self.self.item.NOTIFICATION_IMG_DOWN), object: nil)
+     
         let img = UIImage(named: "FKMenuItem")
-        item.itemImage = UIImageJPEGRepresentation(img!, 1.0)
+        item.itemImage = img?.jpeg
         item.uploadItemToFirebaseDB()
         item.uploadImageToFireBaseStorage()
         item.observeFetchItem(id: "-Kw1fsHaQmT9njsYlslY")
-        
+        item.fetchImageFromFirebaseStorage(id: "-KwBVP2bPtmofRoc1fX8")
         
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -31,6 +39,12 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    // Helper Functions
+    @objc func updateImageViewFKMenuItem(){
+       self.imageView.image =  self.item.itemImage.uiImage!
     }
 
 

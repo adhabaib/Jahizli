@@ -29,6 +29,25 @@ class FKMenuItem: NSObject {
     let NOTIFICATION_IMG_UPLOAD = "FKMenuItem_Image_Uploaded"
     let NOTIFICATION_IMG_DOWN = "FKMenuItem_Image_Downloaded"
     
+    
+    // Setup Object Function
+    func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String){
+        
+        self.itemName_en = itemName_en
+        self.itemName_ar = itemName_ar
+        self.itemInfo_en = itemInfo_en
+        self.itemInfo_ar = itemInfo_ar
+        self.itemImage = itemImage
+        self.itemPrice = itemPrice
+        self.itemCategory = itemCategory
+        
+        self.uploadItemToFirebaseDB()
+        
+        
+        
+    }
+    
+    
     // Firebase Storage Methods
     // (A) Upload Item Image to FireBase Storage
     func uploadImageToFireBaseStorage(){
@@ -54,7 +73,12 @@ class FKMenuItem: NSObject {
         _ = uploadTask.observe(.progress) { snapshot in
             // A progress event occured
             self.print_action(string: "**** FKMenuItem: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
-           // print("**** FKMenuitem: Uploading ItemImage (\(progress_string)) ****")
+            if(snapshot.progress!.fractionCompleted == 1.0){
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD), object: nil)
+                    self.print_item()
+                }
+            }
             
         }
         
@@ -84,6 +108,7 @@ class FKMenuItem: NSObject {
                 self.itemImage = data!
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_DOWN), object: nil)
+                    self.print_item()
                 }
             }
             
@@ -121,6 +146,7 @@ class FKMenuItem: NSObject {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                self.uploadImageToFireBaseStorage()
             }
 
         })

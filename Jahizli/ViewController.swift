@@ -23,16 +23,13 @@ class ViewController: UIViewController {
         // Debuging Model Classes
         item = FKMenuItem()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.updateImageViewFKMenuItem), name: Notification.Name(self.self.item.NOTIFICATION_IMG_DOWN), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateImageViewFKMenuItem), name: Notification.Name(self.self.item.NOTIFICATION_IMG_UPLOAD), object: nil)
      
         let img = UIImage(named: "FKMenuItem")
-        item.itemImage = img?.jpeg
-        item.uploadItemToFirebaseDB()
-        item.uploadImageToFireBaseStorage()
-        item.observeFetchItem(id: "-Kw1fsHaQmT9njsYlslY")
-        item.fetchImageFromFirebaseStorage(id: "-KwBVP2bPtmofRoc1fX8")
         
-        
+        self.item.setupItem(itemName_en: "Chicken Shwarma", itemName_ar: "???????", itemInfo_en: "BEST shwarma in town.", itemInfo_ar: "????????", itemImage: img?.jpeg, itemPrice: 1.5, itemCategory: "Main")
+      
+
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -44,7 +41,9 @@ class ViewController: UIViewController {
     
     // Helper Functions
     @objc func updateImageViewFKMenuItem(){
-       self.imageView.image =  self.item.itemImage.uiImage!
+      item.observeFetchItem(id: self.item.id)
+      item.fetchImageFromFirebaseStorage(id:  self.item.id)
+      self.imageView.image =  self.item.itemImage.uiImage!
     }
 
 

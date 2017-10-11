@@ -1,0 +1,6 @@
+framework module Pods_JahizliTests {
+  umbrella header "Pods-JahizliTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

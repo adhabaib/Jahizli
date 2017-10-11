@@ -45,7 +45,7 @@ class FKMenuItem: NSObject {
         // Upload the file to the path
         let uploadTask = itemImageRef.putData(self.itemImage, metadata: nil) { (metadata, error) in
             guard metadata != nil else {
-                print("\n*** FKMenuItem: Failed to upload meta data ***\n")
+                self.print_action(string: "**** FKMenuItem: Failed to upload meta data ****")
                 return
             }
         }
@@ -53,8 +53,8 @@ class FKMenuItem: NSObject {
         // Add a progress observer to an upload task
         _ = uploadTask.observe(.progress) { snapshot in
             // A progress event occured
-            print("\n*** FKMenuItem: Image upload progress -> \(snapshot.progress!.fractionCompleted) ***\n")
-           // print("\n*** FKMenuitem: Uploading ItemImage (\(progress_string)) ***\n")
+            self.print_action(string: "**** FKMenuItem: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
+           // print("**** FKMenuitem: Uploading ItemImage (\(progress_string)) ****")
             
         }
         
@@ -74,13 +74,13 @@ class FKMenuItem: NSObject {
         
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         itemRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
-            if let error = error {
+            if error != nil {
                 // Uh-oh, an error occurred!
-                print("/n*** FKMenuItem: Item Image could not be found/fetched!")
+                self.print_action(string: "**** FKMenuItem: Item Image could not be found/fetched!")
                 
             } else {
                 // Data for "images/island.jpg" is returned
-                print("/n*** FKMenuItem: Item Image found/fetched!")
+                self.print_action(string: "**** FKMenuItem: Item Image found/fetched!")
                 self.itemImage = data!
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_DOWN), object: nil)
@@ -116,7 +116,7 @@ class FKMenuItem: NSObject {
         
         itemRef.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
             
-            print("\n*** FKMenuItem: item uploaded to Firebase Realtime-Database! ***\n")
+            self.print_action(string: "**** FKMenuItem: item uploaded to Firebase Realtime-Database! ****")
             
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
@@ -139,7 +139,7 @@ class FKMenuItem: NSObject {
             
             // No Item Found Return Failed to Find
             if(postDict == nil){
-                print("\n*** FKMenuItem: Item was not found/empty. ***\n")
+                self.print_action(string: "**** FKMenuItem: Item was not found/empty. ****")
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
@@ -153,7 +153,7 @@ class FKMenuItem: NSObject {
                 // Get Item Data
                 let itemData = postDict?[itemId] as? NSDictionary // array of dictionaries
                 
-                print("\n*** FKMenuItem: item sucessfully found! ***\n")
+                self.print_action(string: "**** FKMenuItem: item sucessfully found! ****")
                 
                 // Init Case Object
                 self.id = itemId
@@ -164,7 +164,7 @@ class FKMenuItem: NSObject {
                 self.itemPrice = Double(itemData!["itemPrice"] as! String)!
                 self.itemCategory = itemData!["itemCategory"] as! String
                
-                print("\t*** FKMenuItem: item Object Initialized***\n")
+                self.print_action(string: "**** FKMenuItem: item Object Initialized****")
                 
                 // Print Out Item
                 self.print_item()
@@ -200,7 +200,7 @@ class FKMenuItem: NSObject {
             
             // No Item Found Return Failed to Find
             if(postDict == nil){
-                print("\n*** FKMenuItem: Item was not found/empty. ***\n")
+                self.print_action(string: "**** FKMenuItem: Item was not found/empty. ****")
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
@@ -214,7 +214,7 @@ class FKMenuItem: NSObject {
                 // Get Item Data
                 let itemData = postDict?[itemId] as? NSDictionary // array of dictionaries
                 
-                print("\n*** FKMenuItem: item sucessfully found! ***\n")
+                self.print_action(string: "**** FKMenuItem: item sucessfully found! ****")
                 
                 // Init Case Object
                 self.id = itemId
@@ -225,10 +225,10 @@ class FKMenuItem: NSObject {
                 self.itemPrice = Double(itemData!["itemPrice"] as! String)!
                 self.itemCategory = itemData!["itemCategory"] as! String
                 
-                print("\t*** FKMenuItem: item Object Initialized***\n")
+                self.print_action(string: "**** FKMenuItem: item Object Initialized****")
                 
                 // Print Out Item
-                self.print_item()
+               self.print_item()
                 
                 
             }
@@ -262,6 +262,7 @@ class FKMenuItem: NSObject {
     // Helper Methods
     
     func print_item(){
+         print("\n************* FKMenuItem Log *************")
         let item = [
             "id" : self.id,
             "itemName_en" : self.itemName_en,
@@ -272,14 +273,20 @@ class FKMenuItem: NSObject {
             "itemCategory" : self.itemCategory
         ]
         
-        print("/n*** FKMenuItem:\n")
+        print("**** FKMenuItem:*")
         print(item)
-        print("\n***")
-        
-      
+        print("****")
+        print("*******************************************\n")
         
     }
     
+    
+    func print_action(string: String){
+        print("\n************* FKMenuItem Log *************")
+        print(string)
+        print("******************************************\n")
+        
+    }
     
     
     

@@ -278,12 +278,19 @@ class FKMenuItem: NSObject {
     
     // (D) Remove All Attached Observers to Item
     func removeItemObserver(){
-        
         Database.database().reference().child("FKMenuItem").removeAllObservers()
-        
     }
     
+    // (E) Remove Object From Firebase
+    func removeItemFromFirebaseDB(){
+          Database.database().reference().child("FKMenuItem").child(self.id)
+    }
     
+    // (F) Update MenuItem to Firebase
+    func updateItemToFirebaseDB(){
+        
+    }
+
     
     // Helper Methods
     

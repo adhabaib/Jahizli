@@ -123,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				154AC7741F8E8D54009EB6EC /* Extentions.swift */,
-				15379D351F8BF8150075EDDB /* Model Classes */,
+				15379D351F8BF8150075EDDB /* FKModel Classes */,
 				15ED3EF51F82B3E10073FE51 /* GoogleService-Info.plist */,
 				150C2D3C1F816B91000C2891 /* AppDelegate.swift */,
 				150C2D3E1F816B91000C2891 /* ViewController.swift */,
@@ -154,12 +154,12 @@
 			path = JahizliUITests;
 			sourceTree = "<group>";
 		};
-		15379D351F8BF8150075EDDB /* Model Classes */ = {
+		15379D351F8BF8150075EDDB /* FKModel Classes */ = {
 			isa = PBXGroup;
 			children = (
 				15379D361F8BF84C0075EDDB /* FKMenuItem.swift */,
 			);
-			path = "Model Classes";
+			path = "FKModel Classes";
 			sourceTree = "<group>";
 		};
 		98928F2625FDB03DE2883F01 /* Frameworks */ = {

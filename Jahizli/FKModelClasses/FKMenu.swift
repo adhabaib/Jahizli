@@ -400,6 +400,7 @@ class FKMenu: NSObject {
         for e in ids_array{
             let item = FKMenuItem()
             item.id = e
+            item.path = self.path
             item.observeSingleFetchItemFromFirebaseDB()
             item.fetchImageFromFirebaseStorage()
             items.append(item)

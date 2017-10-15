@@ -329,15 +329,20 @@ class FKSupplier: NSData {
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
                 self.balance = Double(supplierData!["balance"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
+                self.path =  "FKSuppliers/\(self.id)/"
+                self.menu = FKMenu()
+                self.menu.path = self.path
                 self.menu.id = supplierData!["menu"] as! String
                 self.menu.observeFetchMenuFromFirebaseDB()
                 
                 self.print_action(string: "**** FKSupplier: Supplier Object Initialized****")
+                self.print_supplier_data()
                 
             }
             
             DispatchQueue.main.async {
                 // POST NOTIFICATION FOR COMPLETION
+                
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCH), object: nil)
                 
             }
@@ -387,11 +392,14 @@ class FKSupplier: NSData {
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
                 self.balance = Double(supplierData!["balance"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
+                self.path =  "FKSuppliers/\(self.id)/"
+                self.menu = FKMenu()
+                self.menu.path = self.path
                 self.menu.id = supplierData!["menu"] as! String
                 self.menu.observeFetchMenuFromFirebaseDB()
                 
                 self.print_action(string: "**** FKSupplier: Supplier Object Initialized****")
-                
+                self.print_supplier_data()
             }
             
             DispatchQueue.main.async {
@@ -434,8 +442,7 @@ class FKSupplier: NSData {
         
         
     }
-    
-    
+
     
     // (E) Delete Remove Suppler Data -> Menu Data -> Menu Items
     func removeSupplierFromFireBaseDB(){
@@ -458,6 +465,9 @@ class FKSupplier: NSData {
     // Helper Methods
     
     func print_supplier_data(){
+          print("\n**************************************************** FKMSupplier Log ****************************************************")
+          self.menu.print_menu()
+      print("*************************************************************************************************************************\n")
         
     }
     

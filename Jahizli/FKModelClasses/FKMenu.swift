@@ -291,6 +291,20 @@ class FKMenu: NSObject {
         
     }
     
+    // (H) Remove Menu From Firebase Realtime Database
+    func removeMenuFromFirebaseDB(){
+        
+        // Remove All MenuItems
+        for item in self.menuItems{
+            item.removeItemFromFirebaseDB()
+        }
+        self.menuItems.removeAll()
+        
+        // Remove Menu Data From Firebase
+        Database.database().reference().child("FKMenu").child(self.id).removeValue()
+        
+    }
+    
 
     // Logic Methods
     

@@ -28,6 +28,7 @@ class FKMenuItem: NSObject {
     let NOTIFICATION_OBSERVE = "FKMenuItem_Observe_Done"
     let NOTIFICATION_IMG_UPLOAD = "FKMenuItem_Image_Uploaded"
     let NOTIFICATION_IMG_DOWN = "FKMenuItem_Image_Downloaded"
+    let NOTIFICATION_ITEM_UPDATED = "FKMenuItem_Updated"
     
     
     // Setup Object Function
@@ -155,7 +156,7 @@ class FKMenuItem: NSObject {
     }
     
     // (B) Observe/Constant Fetch FKMenuItem Data
-    func observeFetchItem(id: String){
+    func observeFetchItemFromFirebaseDB(id: String){
         
         // Call Observe on Reference
         _ = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
@@ -215,7 +216,7 @@ class FKMenuItem: NSObject {
     
     
     // (C) Single Observe fetch of item data
-    func observeSingleFetchItem(id: String){
+    func observeSingleFetchItemFromFirebaseDB(id: String){
         
         // Call Observe on Reference
         let ref = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"id").queryEqual(toValue: id)
@@ -289,6 +290,28 @@ class FKMenuItem: NSObject {
     // (F) Update MenuItem to Firebase
     func updateItemToFirebaseDB(){
         
+        print_action(string: "FKMenuItem: Item updating...")
+        let ref  = Database.database().reference().child("FKMenuItem").child(self.id)
+        
+        ref.updateChildValues([
+            "id" : self.id,
+            "itemName_en" : self.itemName_en,
+            "itemName_ar" : self.itemName_ar,
+            "itemInfo_en" : self.itemInfo_en,
+            "itemInfo_ar" : self.itemInfo_ar,
+            "itemPrice" : String(self.itemPrice),
+            "itemCategory" : self.itemCategory
+            ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
+                
+                // POST NOTIFICATION FOR COMPLETION
+                self.print_item()
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_ITEM_UPDATED), object: nil)
+                }
+                
+        })
+        
+   
     }
 
     

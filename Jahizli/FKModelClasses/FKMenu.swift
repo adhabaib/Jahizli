@@ -15,7 +15,8 @@ class FKMenu: NSObject {
     // public variables
     
     var id: String = "?"
-    var menuCategories = [String]()
+    var menuCategories_en = [String]()
+    var menuCategories_ar = [String]()
     var menuItems = [FKMenuItem]()
     
     
@@ -24,11 +25,16 @@ class FKMenu: NSObject {
     
     
     // Setup Object Function
-    func setupMenu(categories: [String]){
+    func setupMenu(categories_en: [String], categories_ar : [String]){
 
         // Setup categories
-        for category in categories{
-            self.menuCategories.append(category)
+        for category in categories_en{
+            self.menuCategories_en.append(category)
+        }
+        
+        // Setup categories
+        for category in categories_ar{
+            self.menuCategories_ar.append(category)
         }
         
     }
@@ -36,7 +42,23 @@ class FKMenu: NSObject {
     
     // Firebase Real-time Database Methods
     
+    // (A) Uploading FKMenu to Real-time Database
+    func uploadMenuToFirebaseDB(){
+     
+    }
     
+    // (B) Observe/Fetching FKMenu From Real-time Database
+    func observeFetchMenuFromFirebaseDB(){
+        
+    }
+    
+    // (C) Single Fetch FKMenu From Real-time Database
+    func observeSingleFetchMenuFromFirebaseDB(){
+        
+    }
+    
+    
+
     // Logic Methods
     
     // (A) Add MenuItem to Menu
@@ -67,9 +89,38 @@ class FKMenu: NSObject {
     }
     
     
+    // (C) Update Menu Item From Menu
+    func updateMenuItem(item: FKMenuItem){
+        item.updateItemToFirebaseDB()
+    }
+    
+    
 
     // Helper Methods
     
+    func print_menu(){
+        
+        print("\n************* FKMenu Log *************")
+        
+        for item in self.menuItems {
+            
+            item.print_item()
+            
+        }
+        
+        
+        print("******************************************\n")
+    
+    }
+    
+    
+    func arrayToString(array: [String]) -> String{
+        return array.joined(separator:",")
+    }
+    
+    func stringToArray(string: String) -> [String]{
+        return string.characters.split{$0 == ","}.map(String.init)
+    }
     
     
 }

@@ -46,9 +46,7 @@ class FKMenuItem: NSObject {
         
         self.path = path
         
-        self.uploadImageToFireBaseStorage()
         self.uploadItemToFirebaseDB()
-        
         
         
     }
@@ -173,6 +171,8 @@ class FKMenuItem: NSObject {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                self.uploadImageToFireBaseStorage()
+              
       
             }
 

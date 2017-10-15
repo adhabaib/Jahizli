@@ -23,6 +23,19 @@ class ViewController: UIViewController {
         
         // Debuging Model Classes
         
+        let supplier = FKSupplier()
+        let logo = UIImage(named: "logo")
+        let display = UIImage(named: "displayImage")
+        let club = UIImage(named: "club")
+        let cake = UIImage(named: "cake")
+        let drink = UIImage(named: "water")
+        
+        
+        supplier.setupSupplier(name_en: "Grill Town", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"])
+
+        supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
+        supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
+        supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
         
         /*
         item = FKMenuItem()
@@ -33,21 +46,12 @@ class ViewController: UIViewController {
         
         self.item.setupItem(itemName_en: "Chicken Shwarma", itemName_ar: "???????", itemInfo_en: "BEST shwarma in town.", itemInfo_ar: "????????", itemImage: img?.jpeg, itemPrice: 1.5, itemCategory: "Main")
           */
-        
-        menu = FKMenu()
-        menu.id = "-KwW0Blkmw8DSfBqZdim"
-        menu.observeFetchMenuFromFirebaseDB()
-    
-        item = FKMenuItem()
 
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.print_out_menu), name: Notification.Name(self.self.item.NOTIFICATION_OBSERVE), object: nil)
+    
         
         
         /*
-        let club = UIImage(named: "club")
-        let cake = UIImage(named: "cake")
-        let drink = UIImage(named: "water")
+      
         
         
         menu.setupMenu(categories_en: ["Sandwitches","Drinks","Desert"], categories_ar: ["Sandwitches","Drinks","Desert"] )

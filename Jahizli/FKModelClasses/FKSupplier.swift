@@ -39,7 +39,7 @@ class FKSupplier: NSData {
     let NOTIFICATION_IMG_DOWN = "FKSuppler_Image_Downloaded"
     
     // Initiliazer
-    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!){
+    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String]){
         
         // Setup basic variables
         self.name_en = name_en
@@ -51,17 +51,16 @@ class FKSupplier: NSData {
         self.phoneNumber = phone_number
         self.balance = balance
         self.creditRate = creditRate
-        
+        self.logo = logo
+        self.displayImage = displayImage
+     
         // Setup Menu
         self.menu = FKMenu()
-        
-        
+        self.menu.setupMenu(categories_en: categories_en, categories_ar: categories_ar)
+
         // UploadData to Firebase Realtime Database
         self.uploadSupplierToFirebaseDB()
-      
-        // Setup Images
-        self.uploadLogoImageToFirebaseStorage()
-        self.uploadDisplayImageToFirebaseStorage()
+     
         
     }
     
@@ -149,8 +148,11 @@ class FKSupplier: NSData {
         let supplierRef = ref.child("FKSupplier").childByAutoId()
         self.id = supplierRef.key
         self.path = "FKSuppliers/\(self.id)/"
-        self.menu.path = self.path
         
+        // Setup Menu
+        self.menu.path = self.path
+
+    
         
         // Setup JSON Object
         let supplier = [
@@ -176,6 +178,10 @@ class FKSupplier: NSData {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                
+                // Setup Images
+                self.uploadLogoImageToFirebaseStorage()
+                self.uploadDisplayImageToFirebaseStorage()
             }
             
         })

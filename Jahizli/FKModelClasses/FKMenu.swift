@@ -387,6 +387,7 @@ class FKMenu: NSObject {
             let item = FKMenuItem()
             item.id = e
             item.observeSingleFetchItemFromFirebaseDB()
+            item.fetchImageFromFirebaseStorage()
             items.append(item)
         }
         

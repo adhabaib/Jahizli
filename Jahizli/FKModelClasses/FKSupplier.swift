@@ -35,6 +35,8 @@ class FKSupplier: NSData {
     // notification tags
     let NOTIFICATION_UPLOAD = "FKSupplier_Basic_Info_Uploaded"
     let NOTIFICATION_IMG_UPLOAD = "FKSupplier_Image_Uploaded"
+    let NOTIFICATION_FETCH = "FKSupplier_Basic_Info_Fetched"
+    let NOTIFICATION_IMG_DOWN = "FKSuppler_Image_Downloaded"
     
     // Initiliazer
     func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!){
@@ -52,6 +54,7 @@ class FKSupplier: NSData {
         
         // Setup Menu
         self.menu = FKMenu()
+        
         
         // UploadData to Firebase Realtime Database
         self.uploadSupplierToFirebaseDB()
@@ -131,6 +134,12 @@ class FKSupplier: NSData {
         
     }
     
+    // (C) Delete Remove Logo Image From Firebase Storage
+    
+    
+    // (D) Delete Remove Display Image From Firebase Storage
+    
+    
     
     // Firebase Real-time Methods
     // (A) Store Basic String Varialbles to FireBase
@@ -140,6 +149,8 @@ class FKSupplier: NSData {
         let supplierRef = ref.child("FKSupplier").childByAutoId()
         self.id = supplierRef.key
         self.path = "FKSuppliers/\(self.id)/"
+        self.menu.path = self.path
+        
         
         // Setup JSON Object
         let supplier = [
@@ -171,9 +182,23 @@ class FKSupplier: NSData {
         
     }
     
+    // (B) Observe/ Fetch Supplier Data + Menu Data -> Menu Items
+    
+    // (C) Single Fetch Supplier Data -> Menu Data -> Menu Items
+    
+    // (D) Update Basic information of Supplier Data
+    
+    // (E) Delete Remove Suppler Data -> Menu Data -> Menu Items
+    
+    
     // Aggregate Logic Methods
     
     // Helper Methods
+    
+    func print_supplier_data(){
+        
+    }
+    
     func print_action(string: String){
         print("\n**************************************************** FKMSupplier Log ****************************************************")
         print(string)
@@ -181,11 +206,6 @@ class FKSupplier: NSData {
         
     }
     
-    
-    
-    
-    
-    
-    
+   
     
 }

@@ -30,6 +30,8 @@ class FKSupplier: NSData {
     var logo : Data!
     var displayImage : Data!
     
+    var path: String = ""
+    
     // notification tags
     let NOTIFICATION_UPLOAD = "FKSupplier_Basic_Info_Uploaded"
     let NOTIFICATION_IMG_UPLOAD = "FKSupplier_Image_Uploaded"
@@ -137,6 +139,7 @@ class FKSupplier: NSData {
         let ref =  Database.database().reference()
         let supplierRef = ref.child("FKSupplier").childByAutoId()
         self.id = supplierRef.key
+        self.path = "FKSuppliers/\(self.id)/"
         
         // Setup JSON Object
         let supplier = [

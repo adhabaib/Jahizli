@@ -18,7 +18,7 @@ class FKMenu: NSObject {
     var menuCategories_en = [String]()
     var menuCategories_ar = [String]()
     var menuItems = [FKMenuItem]()
-    
+    var path = ""
     
     // public notification tags
     let NOTIFICATION_UPLOAD = "FKMenu_Single_Uploaded"
@@ -299,7 +299,7 @@ class FKMenu: NSObject {
         
         let item = FKMenuItem()
         
-        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory)
+        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path)
         
         self.menuItems.append(item)
         self.updateMenuToFirebaseDB()

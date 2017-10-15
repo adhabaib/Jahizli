@@ -69,9 +69,7 @@ class ViewController: UIViewController {
     
     // Helper Functions
     @objc func updateImageViewFKMenuItem(){
-      item.observeFetchItemFromFirebaseDB()
-      item.fetchImageFromFirebaseStorage()
-      self.imageView.image =  self.item.itemImage.uiImage!
+  
     }
     
     

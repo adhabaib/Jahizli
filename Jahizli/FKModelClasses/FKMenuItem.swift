@@ -21,6 +21,8 @@ class FKMenuItem: NSObject {
     var itemImage : Data!
     var itemPrice: Double = 0.0
     var itemCategory = "?"
+    
+    var path = ""
 
     // public notification tags
     let NOTIFICATION_UPLOAD = "FKMenuItem_Single_Uploaded"
@@ -32,7 +34,7 @@ class FKMenuItem: NSObject {
     
     
     // Setup Object Function
-    func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String){
+    func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String, path : String ){
         
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
@@ -42,6 +44,9 @@ class FKMenuItem: NSObject {
         self.itemPrice = itemPrice
         self.itemCategory = itemCategory
         
+        self.path = path
+        
+        self.uploadImageToFireBaseStorage()
         self.uploadItemToFirebaseDB()
         
         
@@ -60,7 +65,7 @@ class FKMenuItem: NSObject {
         let storageRef = storage.reference()
        
         // Child references can also take paths delimited by '/'
-        let itemImageRef = storageRef.child("FKMenuItemimages/\(self.id).jpeg")
+        let itemImageRef = storageRef.child("\(path)/FKMenuItems/\(id).jpeg")
   
         // Upload the file to the path
         let uploadTask = itemImageRef.putData(self.itemImage, metadata: nil) { (metadata, error) in
@@ -95,7 +100,7 @@ class FKMenuItem: NSObject {
         let storageRef = storage.reference()
         
         // Create a reference to the file you want to download
-        let itemRef = storageRef.child("FKMenuItemimages/\(id).jpeg")
+        let itemRef = storageRef.child("\(path)/FKMenuItems/\(id).jpeg")
         
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         itemRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
@@ -127,7 +132,7 @@ class FKMenuItem: NSObject {
         let storageRef = storage.reference()
         
         // Create a reference to the file you want to download
-        let itemRef = storageRef.child("FKMenuItemimages/\(id).jpeg")
+        let itemRef = storageRef.child("\(path)/FKMenuItems/\(id).jpeg")
         
         // Delete the file
         itemRef.delete { error in
@@ -168,7 +173,7 @@ class FKMenuItem: NSObject {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
-                self.uploadImageToFireBaseStorage()
+      
             }
 
         })
@@ -305,8 +310,8 @@ class FKMenuItem: NSObject {
     
     // (E) Remove Object From Firebase
     func removeItemFromFirebaseDB(){
-          Database.database().reference().child("FKMenuItem").child(self.id).removeValue()
-          self.removeItemImageFromFirebaseStorage()
+        Database.database().reference().child("FKMenuItem").child(self.id).removeValue()
+        self.removeItemImageFromFirebaseStorage()
     }
     
     // (F) Update MenuItem to Firebase

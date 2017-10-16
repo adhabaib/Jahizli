@@ -26,6 +26,8 @@ class FKOrder : NSObject {
     
     // notification tags
     let NOTIFICATION_UPLOAD = "FKOrder_Uploaded"
+    let NOTIFICATION_OBSERVE_EMPTY = "FKOrder_Observe_Empty"
+    let NOTIFICATION_OBSERVE = "FKOrder_Observe_Found"
     
     
     //Initializer Method
@@ -87,6 +89,120 @@ class FKOrder : NSObject {
             orderItem.uploadOrderItemToFireBaseDB()
         }
     }
+    
+    // (C) Observe/Fetch Order From FireBase Realtime-Database
+    func observeFetchOrderFromFirebaseDB(){
+        
+        // Call Observe on Reference
+        _ = Database.database().reference().child("FKOrder").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+            
+            // Get Data From Real-time Database
+            let postDict = snapshot.value as? NSDictionary
+            
+            // No Item Found Return Failed to Find
+            if(postDict == nil){
+                self.print_action(string: "**** FKOrder: Order was not found/empty. ****")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
+                }
+                
+            }
+            else{
+                // Get ID
+                let orderID = postDict?.allKeys.first as! String
+                
+                // Get Item Data
+                let orderData = postDict?[orderID] as? NSDictionary // array of dictionaries
+                
+                self.print_action(string: "**** FKOrder: Order was sucessfully found! ****")
+                
+                // Init Case Object
+                
+                self.id = orderID
+                self.orderDateTime = orderData!["orderDateTime"] as! String
+                self.orderStage = orderData!["orderStage"] as! String
+                self.orderPaymentMethod = orderData!["orderPaymentMethod"] as! String
+                self.orderTotalPrice = Double(orderData!["orderTotalPrice"] as! String)!
+                self.customerPhoneNumber = orderData!["customerPhoneNumber"] as! String
+                self.supplierID = orderData!["supplierID"] as! String
+                
+                self.print_action(string: "**** FKOrder: Order Object Initialized****")
+                
+                // Fetch Order Items for Orders
+                // ->
+                
+            }
+            
+            DispatchQueue.main.async {
+                // POST NOTIFICATION FOR COMPLETION
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE), object: nil)
+                
+            }
+ 
+        })
+        
+    }
+    
+    // (D) Observe/Single Fetch Order From Firebase Real-time Database
+    func observeSingleFetchOrderFromFirebaseDB(){
+        
+        // Call Observe on Reference
+        let ref = Database.database().reference().child("FKOrder").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            // Get Data From Real-time Database
+            let postDict = snapshot.value as? NSDictionary
+            
+            // No Item Found Return Failed to Find
+            if(postDict == nil){
+                self.print_action(string: "**** FKOrder: Order was not found/empty. ****")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
+                }
+                
+            }
+            else{
+                // Get ID
+                let orderID = postDict?.allKeys.first as! String
+                
+                // Get Item Data
+                let orderData = postDict?[orderID] as? NSDictionary // array of dictionaries
+                
+                self.print_action(string: "**** FKOrder: Order was sucessfully found! ****")
+                
+                // Init Case Object
+                
+                self.id = orderID
+                self.orderDateTime = orderData!["orderDateTime"] as! String
+                self.orderStage = orderData!["orderStage"] as! String
+                self.orderPaymentMethod = orderData!["orderPaymentMethod"] as! String
+                self.orderTotalPrice = Double(orderData!["orderTotalPrice"] as! String)!
+                self.customerPhoneNumber = orderData!["customerPhoneNumber"] as! String
+                self.supplierID = orderData!["supplierID"] as! String
+                
+                self.print_action(string: "**** FKOrder: Order Object Initialized****")
+                
+                // Fetch Order Items for Orders
+                // ->
+                
+            }
+            
+            DispatchQueue.main.async {
+                // POST NOTIFICATION FOR COMPLETION
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE), object: nil)
+                
+            }
+            
+        })
+    }
+    
+    // (E) Observe/Fetch All Order Items for Order From Real-time Database
+    
+    // (F) Observe/Single Fetch All Order Items for Order From Real-time Database
+    
+    // (G) Update Order To Firebase Real-time Database
     
     
     // Firebase Helper Methods

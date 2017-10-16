@@ -135,7 +135,7 @@ class FKOrder : NSObject {
                 self.print_action(string: "**** FKOrder: Order Object Initialized****")
                 
                 // Fetch Order Items for Orders
-                self.print_order_items()
+               self.observeSingleFetchAllOrderItemsForOrderFromFirebaseDB()
                 
             }
             
@@ -190,7 +190,7 @@ class FKOrder : NSObject {
                 self.print_action(string: "**** FKOrder: Order Object Initialized****")
                 
                 // Fetch Order Items for Orders
-                self.print_order_items()
+                self.observeSingleFetchAllOrderItemsForOrderFromFirebaseDB()
                 
             }
             
@@ -427,6 +427,7 @@ class FKOrder : NSObject {
     
     // Print Order Items
     func print_order_items(){
+        print_order()
         print("\n************* FKOrderItems Log *************")
         for orderItem in self.orderItems {
             let item = [

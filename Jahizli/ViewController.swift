@@ -21,15 +21,21 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
         
-         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
         
+        
+        self.order = FKOrder()
+        self.order.id = "-KwanPBEqoRm3nTR4yiM"
+        order.observeFetchOrderFromFirebaseDB()
+        
+         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.order.NOTIFICATION_FETCHED_ITEMS), object: nil)
+        /*
           supplier = FKSupplier()
           supplier.id = "-Kwan2s9lCWgdY508U5R"
           supplier.observeFetchSupplierFromFirebaseDB()
  
         // Debuging Model Classes
         
-        /*
+       
         let supplier = FKSupplier()
         let logo = UIImage(named: "logo")
         let display = UIImage(named: "displayImage")
@@ -56,15 +62,9 @@ class ViewController: UIViewController {
     
     // Helper Functions
     @objc func handleRequest(){
-        
-        self.order = FKOrder()
-        let now = Date()
-        order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: self.supplier.id)
-        order.addOrderItemToOrder(item: self.supplier.menu.menuItems[0], quantity: 1, instructions: "Extra cheese!")
-        order.addOrderItemToOrder(item: self.supplier.menu.menuItems[1], quantity: 2, instructions: "Room temperature please!")
-        
-        order.uploadOrderToFirebaseDB()
-        
+        self.order.orderStage = "In Progress"
+        self.order.updateOrderToFireBaseDB()
+
     }
 
 }

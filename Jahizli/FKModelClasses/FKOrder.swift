@@ -132,7 +132,7 @@ class FKOrder : NSObject {
                 self.print_action(string: "**** FKOrder: Order Object Initialized****")
                 
                 // Fetch Order Items for Orders
-                // ->
+                self.print_order_items()
                 
             }
             
@@ -187,7 +187,7 @@ class FKOrder : NSObject {
                 self.print_action(string: "**** FKOrder: Order Object Initialized****")
                 
                 // Fetch Order Items for Orders
-                // ->
+                self.print_order_items()
                 
             }
             
@@ -245,7 +245,7 @@ class FKOrder : NSObject {
                 }
                 
                 // Print Order Items
-                // ->
+                self.print_order_items()
             }
             
             DispatchQueue.main.async {
@@ -306,7 +306,7 @@ class FKOrder : NSObject {
                 }
                 
                 // Print Order Items
-                // ->
+                self.print_order_items()
             }
             
             DispatchQueue.main.async {
@@ -337,7 +337,7 @@ class FKOrder : NSObject {
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
-               // -> Print Order
+                self.print_order()
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPDATED), object: nil)
                 }
@@ -395,7 +395,40 @@ class FKOrder : NSObject {
     }
     
     // Print Order
+    func print_order(){
+        print("\n************* FKOrder Log *************")
+        
+        let order = [
+            "id" : self.id,
+            "orderDateTime" : self.orderDateTime,
+            "orderStage" : self.orderStage,
+            "orderPaymentMethod" : self.orderPaymentMethod,
+            "orderTotalPrice" : String(self.orderTotalPrice),
+            "customerPhoneNumber" : self.customerPhoneNumber,
+            "supplierID" : self.supplierID
+            ]
+        
+        print(order)
+        print("******************************************\n")
+    }
     
     // Print Order Items
+    func print_order_items(){
+        print("\n************* FKOrderItems Log *************")
+        for orderItem in self.orderItems {
+            let item = [
+                "id" : orderItem.id,
+                "itemName_en" : orderItem.itemName_en,
+                "itemName_ar" : orderItem.itemName_ar,
+                "itemPrice" : String(orderItem.itemPrice),
+                "quantity" : String(orderItem.quantity),
+                "instructions" : orderItem.instructions,
+                "orderID" : orderItem.orderID
+            ]
+            print(item)
+        }
+        print("******************************************\n")
+
+    }
     
 }

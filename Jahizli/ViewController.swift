@@ -20,14 +20,30 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Second commmit of project!")
         
+        //String to Date Convert
+        /*
+        let dateString = "2017-10-16 08:55:01"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss"
+        let s = dateFormatter.date(from:dateString)
+        print(s!)
+ 
+        //CONVERT FROM NSDate to String
         
+        //let date = Date()
+        
+        let dateFormatterr = DateFormatter()
+        dateFormatterr.dateFormat = "yyyy-MM-dd hh:mm:ss"
+        let dateStrings = dateFormatter.string(from:s as! Date)
+        print(dateStrings)
+        */
         
          NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
-        
+        /*
           supplier = FKSupplier()
           supplier.id = "-Kw_kKtke0eZJ0_AaME-"
           supplier.observeFetchSupplierFromFirebaseDB()
-        
+        */
         // Debuging Model Classes
         
         /*

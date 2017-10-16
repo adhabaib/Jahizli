@@ -26,19 +26,19 @@ class FKOrderItem : NSObject {
     let NOTIFICATION_UPLOAD = "FKOrderItem_Uploaded"
     
     // Initializer Method
-    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double, orderID: String, quantity: Int, instructions: String){
+    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String){
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
         self.itemPrice = itemPrice
         self.quantity = quantity
         self.instructions = instructions
-        self.orderID = orderID
+      
         
     }
 
     // Firebase Realtime-Database function
     //(A) Upload Order Item To Firebase Realtime-Storage
-    func uploadOrderItemToFireBaseStorageDB(){
+    func uploadOrderItemToFireBaseDB(){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()

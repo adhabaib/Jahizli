@@ -13,37 +13,20 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     var supplier: FKSupplier!
+    var order: FKOrder!
     let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Second commmit of project!")
-        
-        //String to Date Convert
-        /*
-        let dateString = "2017-10-16 08:55:01"
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss"
-        let s = dateFormatter.date(from:dateString)
-        print(s!)
- 
-        //CONVERT FROM NSDate to String
-        
-        //let date = Date()
-        
-        let dateFormatterr = DateFormatter()
-        dateFormatterr.dateFormat = "yyyy-MM-dd hh:mm:ss"
-        let dateStrings = dateFormatter.string(from:s as! Date)
-        print(dateStrings)
-        */
+        print("Debug: Proceed to testing... now!")
         
          NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
-        /*
+        
           supplier = FKSupplier()
-          supplier.id = "-Kw_kKtke0eZJ0_AaME-"
+          supplier.id = "-Kwan2s9lCWgdY508U5R"
           supplier.observeFetchSupplierFromFirebaseDB()
-        */
+ 
         // Debuging Model Classes
         
         /*
@@ -60,8 +43,8 @@ class ViewController: UIViewController {
         supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
         supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
         supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
-       */
-
+       
+     */
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -74,8 +57,13 @@ class ViewController: UIViewController {
     // Helper Functions
     @objc func handleRequest(){
         
-        supplier.removeSupplierFromFireBaseDB()
+        self.order = FKOrder()
+        let now = Date()
+        order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: self.supplier.id)
+        order.addOrderItemToOrder(item: self.supplier.menu.menuItems[0], quantity: 1, instructions: "Extra cheese!")
+        order.addOrderItemToOrder(item: self.supplier.menu.menuItems[1], quantity: 2, instructions: "Room temperature please!")
         
+        order.uploadOrderToFirebaseDB()
         
     }
 

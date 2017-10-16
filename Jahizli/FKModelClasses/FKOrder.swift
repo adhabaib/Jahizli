@@ -33,12 +33,11 @@ class FKOrder : NSObject {
     
     
     //Initializer Method
-    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, orderTotalPrice : Double, customerPhoneNumber: String, supplierID: String){
+    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String){
         
         self.orderDateTime = self.dateTimeToString(date: orderDateTime)
         self.orderStage = orderStage
         self.orderPaymentMethod = orderPaymentMethod
-        self.orderTotalPrice = orderTotalPrice
         self.customerPhoneNumber = customerPhoneNumber
         self.supplierID = supplierID
         
@@ -52,6 +51,10 @@ class FKOrder : NSObject {
         let ref =  Database.database().reference()
         let orderRef = ref.child("FKOrder").childByAutoId()
         self.id = orderRef.key
+    
+        
+        // Calculate Total Cost
+        
         
         // Setup JSON Object
         let order = [
@@ -59,7 +62,7 @@ class FKOrder : NSObject {
             "orderDateTime" : self.orderDateTime,
             "orderStage" : self.orderStage,
             "orderPaymentMethod" : self.orderPaymentMethod,
-            "orderTotalPrice" : String(self.orderTotalPrice),
+            "orderTotalPrice" : self.getTotalPriceFromOrderItems(),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID
         ]
@@ -378,6 +381,16 @@ class FKOrder : NSObject {
     }
     
     //Helper Functions
+    func getTotalPriceFromOrderItems() -> String{
+        for orderItem in self.orderItems {
+            self.orderTotalPrice = self.orderTotalPrice + orderItem.itemPrice
+        }
+        
+        return String(self.orderTotalPrice)
+    }
+    
+    
+    
     func dateTimeToString(date: Date) -> String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss"

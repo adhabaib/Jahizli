@@ -255,8 +255,6 @@ class FKSupplier: NSData {
         // Setup Menu
         self.menu.path = self.path
         
-        
-        
         // Setup JSON Object
         let supplier = [
             "id" : self.id,
@@ -278,13 +276,12 @@ class FKSupplier: NSData {
             
             self.print_action(string: "**** FKSupplier: Supplier uploaded to Firebase Realtime-Database! ****")
             
+            self.uploadLogoImageToFirebaseStorage()
+            self.uploadDisplayImageToFirebaseStorage()
+            
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
-                
-                // Setup Images
-                self.uploadLogoImageToFirebaseStorage()
-                self.uploadDisplayImageToFirebaseStorage()
             }
             
         })

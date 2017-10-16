@@ -21,7 +21,9 @@ class FKMenuItem: NSObject {
     var itemImage : Data!
     var itemPrice: Double = 0.0
     var itemCategory = "?"
-    
+    var menuID = ""
+   
+    // Not Stored, however derived
     var path = ""
 
     // public notification tags
@@ -34,7 +36,7 @@ class FKMenuItem: NSObject {
     
     
     // Setup Object Function
-    func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String, path : String ){
+    func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String, path : String, menuID : String){
         
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
@@ -43,6 +45,7 @@ class FKMenuItem: NSObject {
         self.itemImage = itemImage
         self.itemPrice = itemPrice
         self.itemCategory = itemCategory
+        self.menuID = menuID
         
         self.path = path
         
@@ -159,7 +162,8 @@ class FKMenuItem: NSObject {
             "itemInfo_en" : self.itemInfo_en,
             "itemInfo_ar" : self.itemInfo_ar,
             "itemPrice" : String(self.itemPrice),
-            "itemCategory" : self.itemCategory
+            "itemCategory" : self.itemCategory,
+            "menuID" : self.menuID
         ]
 
         // Save Object to Real-time Database
@@ -216,6 +220,7 @@ class FKMenuItem: NSObject {
                 self.itemInfo_en = itemData!["itemInfo_en"] as! String
                 self.itemPrice = Double(itemData!["itemPrice"] as! String)!
                 self.itemCategory = itemData!["itemCategory"] as! String
+                self.menuID = itemData!["menuID"] as! String
                
                 self.print_action(string: "**** FKMenuItem: item Object Initialized****")
                 
@@ -277,6 +282,7 @@ class FKMenuItem: NSObject {
                 self.itemInfo_en = itemData!["itemInfo_en"] as! String
                 self.itemPrice = Double(itemData!["itemPrice"] as! String)!
                 self.itemCategory = itemData!["itemCategory"] as! String
+                self.menuID = itemData!["menuID"] as! String
                 
                 self.print_action(string: "**** FKMenuItem: item Object Initialized****")
                 
@@ -327,7 +333,8 @@ class FKMenuItem: NSObject {
             "itemInfo_en" : self.itemInfo_en,
             "itemInfo_ar" : self.itemInfo_ar,
             "itemPrice" : String(self.itemPrice),
-            "itemCategory" : self.itemCategory
+            "itemCategory" : self.itemCategory,
+            "menuID" : self.menuID
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -353,7 +360,8 @@ class FKMenuItem: NSObject {
             "itemInfo_en" : self.itemInfo_en,
             "itemInfo_ar" : self.itemInfo_ar,
             "itemPrice" : String(self.itemPrice),
-            "itemCategory" : self.itemCategory
+            "itemCategory" : self.itemCategory,
+            "menuID" : self.menuID
         ]
         
         print("**** FKMenuItem:*")

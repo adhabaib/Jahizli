@@ -25,6 +25,7 @@ class FKMenu: NSObject {
     let NOTIFICATION_UPDATED = "FKMenu_Updated"
     let NOTIFICATION_OBSERVE_EMPTY = "FKMenu_Observe_Empty"
     let NOTIFICATION_OBSERVE = "FKMenu_Observe_Done"
+    let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
     // Setup Object Function
     func setupMenu(categories_en: [String], categories_ar : [String]){
@@ -79,6 +80,7 @@ class FKMenu: NSObject {
     // (B) Observe/Fetching FKMenu From Real-time Database
     func observeFetchMenuFromFirebaseDB(){
         
+        
         // Call Observe on Reference
         _ = Database.database().reference().child("FKMenu").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
             
@@ -107,7 +109,10 @@ class FKMenu: NSObject {
                 self.id = menuId
                 self.menuCategories_en = self.stringToArray(string: menuData!["menuCategories_en"] as! String)
                 self.menuCategories_ar = self.stringToArray(string: menuData!["menuCategories_ar"] as! String)
-                self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
+                self.fetchMenuItemsWithIDSFromFirebaseDB()
+                
+                // NOTE: Removed, added new method to fetch all items in one call
+                //self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
                
                 self.print_action(string: "**** FKMenu: Menu Object Initialized****")
                 
@@ -159,7 +164,10 @@ class FKMenu: NSObject {
                 self.id = menuId
                 self.menuCategories_en = self.stringToArray(string: menuData!["menuCategories_en"] as! String)
                 self.menuCategories_ar = self.stringToArray(string: menuData!["menuCategories_ar"] as! String)
-                self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
+                self.fetchMenuItemsWithIDSFromFirebaseDB()
+                
+                // NOTE: Removed, added new method to fetch all items in one call
+                //self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
                 
                 self.print_action(string: "**** FKMenu: Menu Object Initialized****")
                 
@@ -313,7 +321,7 @@ class FKMenu: NSObject {
         
         let item = FKMenuItem()
         
-        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path)
+        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path, menuID: self.id)
         
         self.menuItems.append(item)
         self.updateMenuToFirebaseDB()
@@ -341,6 +349,67 @@ class FKMenu: NSObject {
     // (C) Update Menu Item From Menu
     func updateMenuItem(item: FKMenuItem){
         item.updateItemToFirebaseDB()
+    }
+    
+    // (D) Get All MenuItems For Menu
+    func fetchMenuItemsWithIDSFromFirebaseDB(){
+        // Call Observe on Reference
+        _ = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"menuID").queryEqual(toValue: self.id).observe(DataEventType.value, with: { (snapshot) in
+            
+            // Get Data From Real-time Database
+            let postDict = snapshot.value as? NSDictionary
+            
+            // No Item Found Return Failed to Find
+            if(postDict == nil){
+                self.print_action(string: "**** FKMenu: Items were not found/empty. ****")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
+                }
+                
+            }
+            else{
+                for child in snapshot.children.allObjects as! [DataSnapshot]  {
+                    
+                    // Create FKMenuItem
+                    let item = FKMenuItem()
+                    
+                    // Parse Data to new Item
+                    let itemData = child.value as? NSDictionary
+                    let itemID = postDict?.allKeys.first as! String
+                    
+                    self.print_action(string: "**** FKMenu: items sucessfully found! ****")
+                    
+                    // Init Case Object
+                    item.id = itemID
+                    item.itemName_en = itemData!["itemName_en"] as! String
+                    item.itemName_ar = itemData!["itemName_ar"] as! String
+                    item.itemInfo_ar  = itemData!["itemInfo_ar"] as! String
+                    item.itemInfo_en = itemData!["itemInfo_en"] as! String
+                    item.itemPrice = Double(itemData!["itemPrice"] as! String)!
+                    item.itemCategory = itemData!["itemCategory"] as! String
+                    item.menuID = itemData!["menuID"] as! String
+                    item.path = self.path
+                    item.fetchImageFromFirebaseStorage()
+                    
+                    self.menuItems.append(item)
+                    
+                    self.print_action(string: "**** FKMenu: item Object Initialized****")
+ 
+                }
+              
+                self.print_menu()
+            }
+            
+            DispatchQueue.main.async {
+                // POST NOTIFICATION FOR COMPLETION
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
+                
+            }
+            
+            
+            
+        })
     }
     
     

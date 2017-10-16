@@ -22,18 +22,20 @@ class ViewController: UIViewController {
         print("Second commmit of project!")
         
         
-        let supplier = FKSupplier()
-        supplier.id = "-KwWz8QQDLnYngkS4rXU"
-        supplier.observeFetchSupplierFromFirebaseDB()
-        supplier.fetchLogoImageFromFirebaseStorage()
-        supplier.fetchDisplayImageFromFirebaseStorage()
         
+        
+        
+          let supplier = FKSupplier()
+          supplier.id = "-Kw_kKtke0eZJ0_AaME-"
+          supplier.observeFetchSupplierFromFirebaseDB()
         
         // Debuging Model Classes
+        
         /*
         let supplier = FKSupplier()
         let logo = UIImage(named: "logo")
         let display = UIImage(named: "displayImage")
+       
         let club = UIImage(named: "club")
         let cake = UIImage(named: "cake")
         let drink = UIImage(named: "water")
@@ -43,11 +45,7 @@ class ViewController: UIViewController {
         supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
         supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
         supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
-        */
-        
-        
-        
-        
+       */
 
         // Do any additional setup after loading the view, typically from a nib.
     }

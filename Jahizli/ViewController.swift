@@ -11,10 +11,9 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
-   
-    var item:FKMenuItem!
-    var menu: FKMenu!
-    var item_count = 0
+    
+    var supplier: FKSupplier!
+    let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
     
     override func viewDidLoad() {
@@ -23,9 +22,9 @@ class ViewController: UIViewController {
         
         
         
+         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
         
-        
-          let supplier = FKSupplier()
+          supplier = FKSupplier()
           supplier.id = "-Kw_kKtke0eZJ0_AaME-"
           supplier.observeFetchSupplierFromFirebaseDB()
         
@@ -57,26 +56,12 @@ class ViewController: UIViewController {
     
     
     // Helper Functions
-    @objc func updateImageViewFKMenuItem(){
-  
-    }
-    
-    
-
-    
-    @objc func print_out_menu(){
+    @objc func handleRequest(){
         
-        self.item_count = self.item_count + 1
-        if(self.item_count == self.menu.menuItems.count){
-            print("PRINTING OUT MENU FROM VIEW_CONTROLLER: \n")
-            self.menu.print_menu()
-           // self.menu.updateMenuCategory(old_category_en: "Drinks", old_category_ar: "Drinks", new_category_en: "Beverages", new_category_ar: "Beverages")
-         //   self.menu.removeMenuCategory(old_category_en: "Desert", old_category_ar: "Desert")
-        }
+        supplier.removeSupplierFromFireBaseDB()
         
         
     }
-
 
 }
 

@@ -47,7 +47,7 @@ class FKMenu: NSObject {
     
     //MARK:  Firebase Real-time Database Methods
     
-    // (A) Uploading FKMenu to Real-time Database
+    //* (A) Uploading FKMenu to Real-time Database
     func uploadMenuToFirebaseDB(){
         
         // Create/Retrieve Reference
@@ -76,12 +76,11 @@ class FKMenu: NSObject {
         })
     }
     
-    // (B) Observe/Fetching FKMenu From Real-time Database
+    //*(B) Observe/Fetching FKMenu From Real-time Database
     func observeFetchMenuFromFirebaseDB(){
-        
-        
+
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child("FKMenus").child(self.id).observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -96,29 +95,57 @@ class FKMenu: NSObject {
                 
             }
             else{
-                // Get ID
-                let menuId = postDict?.allKeys.first as! String
                 
-                // Get Item Data
-                let menuData = postDict?[menuId] as? NSDictionary // array of dictionaries
                 
-                self.print_action(string: "**** FKMenu: menu sucessfully found! ****")
+                for child in snapshot.children.allObjects as! [DataSnapshot]  {
                 
-                // Init Case Object
-                self.id = menuId
-                self.menuCategories_en = self.stringToArray(string: menuData!["menuCategories_en"] as! String)
-                self.menuCategories_ar = self.stringToArray(string: menuData!["menuCategories_ar"] as! String)
-                self.fetchMenuItemsWithIDSFromFirebaseDB()
+                    if(child.key == "FKMenuItems"){
+                       
+                        for grandchild in child.children.allObjects as! [DataSnapshot] {
+                            // Create FKMenuItem
+                            let item = FKMenuItem()
+                            
+                            // Parse Data to new Item
+                            let itemData = grandchild.value as? NSDictionary
+                            
+                            self.print_action(string: "**** FKMenu: items sucessfully found! ****")
+                            
+                            // Init Case Object
+                            item.id = itemData!["id"] as! String
+                            item.itemName_en = itemData!["itemName_en"] as! String
+                            item.itemName_ar = itemData!["itemName_ar"] as! String
+                            item.itemInfo_ar  = itemData!["itemInfo_ar"] as! String
+                            item.itemInfo_en = itemData!["itemInfo_en"] as! String
+                            item.itemPrice = Double(itemData!["itemPrice"] as! String)!
+                            item.itemCategory = itemData!["itemCategory"] as! String
+                            item.menuID = itemData!["menuID"] as! String
+                            item.path = self.path
+                            item.fetchImageFromFirebaseStorage()
+                            
+                            self.menuItems.append(item)
+                            
+                            self.print_action(string: "**** FKMenu: item Object Initialized****")
+                        }
+
+                    }
+                    else if(child.key == "id"){
+                        self.id = child.value as! String
+                    }
+                    else if(child.key == "menuCategories_en"){
+                        self.menuCategories_en = self.stringToArray(string: child.value as! String)
+                    }
+                    else if(child.key == "menuCategories_ar"){
+                        self.menuCategories_ar = self.stringToArray(string: child.value as! String)
+                    }
+                    
+                }
                 
-                // NOTE: Removed, added new method to fetch all items in one call
-                //self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
-               
-                self.print_action(string: "**** FKMenu: Menu Object Initialized****")
-                
-                // Print Out Item
+                print("-------------------------------------------------------")
                 self.print_menu()
+                print("-------------------------------------------------------")
                 
                 
+            
             }
             
             DispatchQueue.main.async {
@@ -132,7 +159,7 @@ class FKMenu: NSObject {
         })
     }
     
-    // (C) Single Fetch FKMenu From Real-time Database
+    //*(C) Single Fetch FKMenu From Real-time Database
     func observeSingleFetchMenuFromFirebaseDB(){
         // Call Observe on Reference
         let ref = Database.database().reference().child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id)
@@ -143,7 +170,7 @@ class FKMenu: NSObject {
             
             // No Item Found Return Failed to Find
             if(postDict == nil){
-                self.print_action(string: "**** FKMenu: menu was not found/empty. ****")
+                self.print_action(string: "**** FKMenu: Menu was not found/empty. ****")
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
@@ -151,29 +178,55 @@ class FKMenu: NSObject {
                 
             }
             else{
-                // Get ID
-                let menuId = postDict?.allKeys.first as! String
                 
-                // Get Item Data
-                let menuData = postDict?[menuId] as? NSDictionary // array of dictionaries
                 
-                self.print_action(string: "**** FKMenu: menu sucessfully found! ****")
+                for child in snapshot.children.allObjects as! [DataSnapshot]  {
+                    
+                    if(child.key == "FKMenuItems"){
+                        
+                        for grandchild in child.children.allObjects as! [DataSnapshot] {
+                            // Create FKMenuItem
+                            let item = FKMenuItem()
+                            
+                            // Parse Data to new Item
+                            let itemData = grandchild.value as? NSDictionary
+ 
+                            self.print_action(string: "**** FKMenu: items sucessfully found! ****")
+                            
+                            // Init Case Object
+                            item.id = itemData!["id"] as! String
+                            item.itemName_en = itemData!["itemName_en"] as! String
+                            item.itemName_ar = itemData!["itemName_ar"] as! String
+                            item.itemInfo_ar  = itemData!["itemInfo_ar"] as! String
+                            item.itemInfo_en = itemData!["itemInfo_en"] as! String
+                            item.itemPrice = Double(itemData!["itemPrice"] as! String)!
+                            item.itemCategory = itemData!["itemCategory"] as! String
+                            item.menuID = itemData!["menuID"] as! String
+                            item.path = self.path
+                            item.fetchImageFromFirebaseStorage()
+                            
+                            self.menuItems.append(item)
+                            
+                            self.print_action(string: "**** FKMenu: item Object Initialized****")
+                        }
+                        
+                    }
+                    else if(child.key == "id"){
+                        self.id = child.value as! String
+                    }
+                    else if(child.key == "menuCategories_en"){
+                        self.menuCategories_en = self.stringToArray(string: child.value as! String)
+                    }
+                    else if(child.key == "menuCategories_ar"){
+                        self.menuCategories_ar = self.stringToArray(string: child.value as! String)
+                    }
+                    
+                }
                 
-                // Init Case Object
-                self.id = menuId
-                self.menuCategories_en = self.stringToArray(string: menuData!["menuCategories_en"] as! String)
-                self.menuCategories_ar = self.stringToArray(string: menuData!["menuCategories_ar"] as! String)
-                self.fetchMenuItemsWithIDSFromFirebaseDB()
-                
-                // NOTE: Removed, added new method to fetch all items in one call
-                //self.menuItems = self.decodeMenuItemIDs(ids: menuData!["menuItems"] as! String )
-                
-                self.print_action(string: "**** FKMenu: Menu Object Initialized****")
-                
-                // Print Out Item
+                print("-------------------------------------------------------")
                 self.print_menu()
-                
-                
+                print("-------------------------------------------------------")
+ 
             }
             
             DispatchQueue.main.async {
@@ -181,13 +234,11 @@ class FKMenu: NSObject {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE), object: nil)
                 
             }
-            
-            
-            
+
         })
     }
     
-    // (D) Update FKMenu To Real-time Database
+    // *(D) Update FKMenu To Real-time Database
     func updateMenuToFirebaseDB(){
         
         print_action(string: "FKMenu: Item updating...")
@@ -196,8 +247,7 @@ class FKMenu: NSObject {
         ref.updateChildValues([
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
-            "menuItems" : self.fetchMenuItemsID()
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -211,7 +261,7 @@ class FKMenu: NSObject {
         
     }
     
-    // (E) Update Categories to Menu
+    //* (E) Update Categories to Menu
     func updateMenuCategory(old_category_en: String ,old_category_ar: String, new_category_en: String, new_category_ar: String){
         
         // Update Menu Categories in both English and Arabic
@@ -253,7 +303,7 @@ class FKMenu: NSObject {
         
     }
     
-    // (F) Remove Category and Items associated with it
+    //* (F) Remove Category and Items associated with it
     func removeMenuCategory(old_category_en: String, old_category_ar: String){
         
         
@@ -290,7 +340,7 @@ class FKMenu: NSObject {
         
     }
     
-    // (G) Add new Menu Category
+    //* (G) Add new Menu Category
     func addNewMenuCategory(category_en: String, category_ar: String){
         self.menuCategories_en.append(category_en)
         self.menuCategories_ar.append(category_ar)
@@ -298,7 +348,7 @@ class FKMenu: NSObject {
         
     }
     
-    // (H) Remove Menu From Firebase Realtime Database
+    //* (H) Remove Menu From Firebase Realtime Database
     func removeMenuFromFirebaseDB(){
         // Clear MenuItems From Array
         self.menuItems.removeAll()
@@ -311,7 +361,7 @@ class FKMenu: NSObject {
 
     //MARK:  Logic Methods
     
-    // (A) Add MenuItem to Menu
+    //* (A) Add MenuItem to Menu
     func addMenuItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String){
         
         let item = FKMenuItem()
@@ -322,7 +372,7 @@ class FKMenu: NSObject {
         
     }
     
-    // (B) Remove MenuItem From Menu
+    //* (B) Remove MenuItem From Menu
     func removeMenuItem(item: FKMenuItem){
         
         // Remove Item from menu and from FirebaseDB
@@ -334,86 +384,41 @@ class FKMenu: NSObject {
             }
             counter = counter + 1
         }
-        
-        self.updateMenuToFirebaseDB()
-        
     }
     
     
-    // (C) Update Menu Item From Menu
+    //* (C) Update Menu Item From Menu
     func updateMenuItem(item: FKMenuItem){
         item.updateItemToFirebaseDB()
     }
     
-    // (D) Get All MenuItems For Menu
-    func fetchMenuItemsWithIDSFromFirebaseDB(){
-        // Call Observe on Reference
-        _ = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"menuID").queryEqual(toValue: self.id).observe(DataEventType.value, with: { (snapshot) in
-            
-            // Get Data From Real-time Database
-            let postDict = snapshot.value as? NSDictionary
-            
-            // No Item Found Return Failed to Find
-            if(postDict == nil){
-                self.print_action(string: "**** FKMenu: Items were not found/empty. ****")
-                
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
-                }
-                
-            }
-            else{
-                for child in snapshot.children.allObjects as! [DataSnapshot]  {
-                    
-                    // Create FKMenuItem
-                    let item = FKMenuItem()
-                    
-                    // Parse Data to new Item
-                    let itemData = child.value as? NSDictionary
-                    let itemID = postDict?.allKeys.first as! String
-                    
-                    self.print_action(string: "**** FKMenu: items sucessfully found! ****")
-                    
-                    // Init Case Object
-                    item.id = itemID
-                    item.itemName_en = itemData!["itemName_en"] as! String
-                    item.itemName_ar = itemData!["itemName_ar"] as! String
-                    item.itemInfo_ar  = itemData!["itemInfo_ar"] as! String
-                    item.itemInfo_en = itemData!["itemInfo_en"] as! String
-                    item.itemPrice = Double(itemData!["itemPrice"] as! String)!
-                    item.itemCategory = itemData!["itemCategory"] as! String
-                    item.menuID = itemData!["menuID"] as! String
-                    item.path = self.path
-                    item.fetchImageFromFirebaseStorage()
-                    
-                    self.menuItems.append(item)
-                    
-                    self.print_action(string: "**** FKMenu: item Object Initialized****")
- 
-                }
-              
-                self.print_menu()
-            }
-            
-            DispatchQueue.main.async {
-                // POST NOTIFICATION FOR COMPLETION
-                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCHED_ITEMS), object: nil)
-                
-            }
-            
-            
-            
-        })
-    }
-    
-    
-    
 
     //MARK:  Helper Methods
+    
+    func print_menu_data(){
+        
+        print("\n************************** FKMenu Log **************************")
+        let menu = [
+            "id" : self.id,
+            "menuCategories_en" : self.arrayToString(array: menuCategories_en),
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+        ]
+        print(menu)
+         print("*******************************************************************\n")
+    }
+    
     
     func print_menu(){
         
         print("\n************************** FKMenu Log **************************")
+        
+        
+        let menu = [
+            "id" : self.id,
+            "menuCategories_en" : self.arrayToString(array: menuCategories_en),
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+        ]
+        print(menu)
         
         for item in self.menuItems {
             

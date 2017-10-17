@@ -77,7 +77,7 @@ class FKMenuItem: NSObject {
         // Add a progress observer to an upload task
         _ = uploadTask.observe(.progress) { snapshot in
             // A progress event occured
-            self.print_action(string: "**** FKMenuItem: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
+         //   self.print_action(string: "**** FKMenuItem: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
             if(snapshot.progress!.fractionCompleted == 1.0){
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD), object: nil)
@@ -102,14 +102,14 @@ class FKMenuItem: NSObject {
         let itemRef = storageRef.child("\(path)/FKMenuItems/\(id).jpeg")
         
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
-        itemRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+        itemRef.getData(maxSize: 2 * 1024 * 1024) { data, error in
             if error != nil {
                 // Uh-oh, an error occurred!
-                self.print_action(string: "**** FKMenuItem: Item Image could not be found/fetched!")
+                self.print_action(string: "**** FKMenuItem: Item Image \(self.itemName_en) could NOT be found/fetched!")
                 
             } else {
                 // Data for "images/island.jpg" is returned
-                self.print_action(string: "**** FKMenuItem: Item Image found/fetched!")
+                self.print_action(string: "**** FKMenuItem: Item Image \(self.itemName_en) found/fetched!")
                 self.itemImage = data!
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_DOWN), object: nil)

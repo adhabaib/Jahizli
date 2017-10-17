@@ -91,7 +91,7 @@ class FKSupplier: NSData {
         // Add a progress observer to an upload task
         _ = uploadTask.observe(.progress) { snapshot in
             // A progress event occured
-            self.print_action(string: "**** FKSupplier: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
+            //self.print_action(string: "**** FKSupplier: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
             if(snapshot.progress!.fractionCompleted == 1.0){
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD), object: nil)
@@ -125,7 +125,7 @@ class FKSupplier: NSData {
         // Add a progress observer to an upload task
         _ = uploadTask.observe(.progress) { snapshot in
             // A progress event occured
-            self.print_action(string: "**** FKSupplier: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
+            //self.print_action(string: "**** FKSupplier: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
             if(snapshot.progress!.fractionCompleted == 1.0){
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD), object: nil)
@@ -462,8 +462,24 @@ class FKSupplier: NSData {
     
     func print_supplier_data(){
           print("\n**************************************************** FKMSupplier Log ****************************************************")
-          self.menu.print_menu()
-      print("*************************************************************************************************************************\n")
+        
+        let supplier = [
+            "id" : self.id,
+            "name_en" : self.name_en,
+            "name_ar" : self.name_ar,
+            "status" : self.status,
+            "hours" : self.hours,
+            "info_en" : self.info_en,
+            "info_ar" : self.info_ar,
+            "phoneNumber" : self.phoneNumber ,
+            "balance" : String(self.balance) ,
+            "creditRate" : String(self.creditRate),
+            "menu" : self.menu.id
+        ]
+        
+        print(supplier)
+        
+        print("*************************************************************************************************************************\n")
         
     }
     

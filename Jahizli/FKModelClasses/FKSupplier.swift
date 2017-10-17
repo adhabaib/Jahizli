@@ -12,7 +12,7 @@ import Firebase
 //FKSupplier Class
 class FKSupplier: NSData {
     
-    // public variables
+    //MARK:  public variables
     var id : String = ""
     
     var name_en : String = ""
@@ -41,7 +41,7 @@ class FKSupplier: NSData {
     let NOTIFICATION_UPDATED = "FKSupplier_Data_Updated"
     
     
-    // Initiliazer
+    //MARK:  Initiliazer
     func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String]){
         
         // Setup basic variables
@@ -67,7 +67,7 @@ class FKSupplier: NSData {
         
     }
     
-    // Firebase Storage Methods
+    //MARK:  Firebase Storage Methods
     // (A) Upload Logo to Firebase Storage
     func uploadLogoImageToFirebaseStorage(){
         
@@ -243,7 +243,7 @@ class FKSupplier: NSData {
     }
     
     
-    // Firebase Real-time Methods
+    //MARK:  Firebase Real-time Methods
     // (A) Store Basic String Varialbles to FireBase
     func uploadSupplierToFirebaseDB(){
         // Create/Retrieve Reference
@@ -457,9 +457,8 @@ class FKSupplier: NSData {
     }
     
     
-    // Aggregate Logic Methods
     
-    // Helper Methods
+    //MARK:  Helper Methods
     
     func print_supplier_data(){
           print("\n**************************************************** FKMSupplier Log ****************************************************")

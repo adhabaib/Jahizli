@@ -12,7 +12,7 @@ import Firebase
 // FKMenuItem Class
 class FKMenuItem: NSObject {
     
-    // public variables
+    //MARK:  public variables
     var id = "?"
     var itemName_en = "?"
     var itemName_ar = "?"
@@ -26,7 +26,7 @@ class FKMenuItem: NSObject {
     // Not Stored, however derived
     var path = ""
 
-    // public notification tags
+    //MARK:  public notification tags
     let NOTIFICATION_UPLOAD = "FKMenuItem_Single_Uploaded"
     let NOTIFICATION_OBSERVE_EMPTY = "FKMenuItem_Observe_Empty"
     let NOTIFICATION_OBSERVE = "FKMenuItem_Observe_Done"
@@ -35,7 +35,7 @@ class FKMenuItem: NSObject {
     let NOTIFICATION_ITEM_UPDATED = "FKMenuItem_Updated"
     
     
-    // Setup Object Function
+    //MARK:  Setup Object Function
     func setupItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String, path : String, menuID : String){
         
         self.itemName_en = itemName_en
@@ -55,7 +55,7 @@ class FKMenuItem: NSObject {
     }
     
     
-    // Firebase Storage Methods
+    //MARK:  Firebase Storage Methods
     // (A) Upload Item Image to FireBase Storage
     func uploadImageToFireBaseStorage(){
         
@@ -145,7 +145,7 @@ class FKMenuItem: NSObject {
         }
     }
     
-    // Firebase Realtime-Database Methods
+    // MARK: Firebase Realtime-Database Methods
     // (A) Uploading Single FKMenuItem to Real-time Database
     func uploadItemToFirebaseDB(){
         
@@ -349,7 +349,7 @@ class FKMenuItem: NSObject {
     }
 
     
-    // Helper Methods
+    //MARK:  Helper Methods
     
     func print_item(){
          print("\n************* FKMenuItem Log *************")

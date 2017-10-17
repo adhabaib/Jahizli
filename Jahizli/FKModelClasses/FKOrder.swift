@@ -12,7 +12,7 @@ import Firebase
 // FKOrder Class
 class FKOrder : NSObject {
     
-    // public variables
+    //MARK:  public variables
     var id : String = ""
     var orderDateTime: String = ""
     var orderStage : String = ""
@@ -24,7 +24,7 @@ class FKOrder : NSObject {
     var orderItems = [FKOrderItem]()
     
     
-    // notification tags
+    //MARK:  notification tags
     let NOTIFICATION_UPLOAD = "FKOrder_Uploaded"
     let NOTIFICATION_OBSERVE_EMPTY = "FKOrder_Observe_Empty"
     let NOTIFICATION_OBSERVE = "FKOrder_Observe_Found"
@@ -32,7 +32,7 @@ class FKOrder : NSObject {
     let NOTIFICATION_UPDATED = "FKOrder_Updated_Order"
     
     
-    //Initializer Method
+    //MARK: Initializer Method
     func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String){
         
         self.orderDateTime = self.dateTimeToString(date: orderDateTime)
@@ -43,7 +43,7 @@ class FKOrder : NSObject {
         
     }
     
-    //Firebase Real-time Database Functions
+    //MARK: Firebase Real-time Database Functions
     //(A) Upload Order To Real-time Database
     func uploadOrderToFirebaseDB(){
         
@@ -349,7 +349,7 @@ class FKOrder : NSObject {
     }
     
     
-    // Firebase Helper Methods
+    //MARK:  Firebase Helper Methods
     //(A) Add Order Item to Order
     func addOrderItemToOrder(item: FKMenuItem, quantity: Int, instructions: String){
         let orderItem = FKOrderItem()
@@ -380,7 +380,7 @@ class FKOrder : NSObject {
         }
     }
     
-    //Helper Functions
+    //MARK: Helper Functions
     func getTotalPriceFromOrderItems() -> String{
         for orderItem in self.orderItems {
             self.orderTotalPrice = self.orderTotalPrice + orderItem.itemPrice

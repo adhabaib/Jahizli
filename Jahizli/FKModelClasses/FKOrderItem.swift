@@ -12,7 +12,7 @@ import Firebase
 // FKOrderItem Class
 class FKOrderItem : NSObject {
     
-    // public variables
+    //MARK:  public variables
     var id: String = ""
     var itemName_en: String = ""
     var itemName_ar: String = ""
@@ -22,10 +22,10 @@ class FKOrderItem : NSObject {
     var instructions: String = ""
     
     
-    // notification tag
+    //MARK:  notification tag
     let NOTIFICATION_UPLOAD = "FKOrderItem_Uploaded"
     
-    // Initializer Method
+    //MARK:  Initializer Method
     func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String){
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
@@ -36,7 +36,7 @@ class FKOrderItem : NSObject {
         
     }
 
-    // Firebase Realtime-Database function
+    //MARK:  Firebase Realtime-Database function
     //(A) Upload Order Item To Firebase Realtime-Storage
     func uploadOrderItemToFireBaseDB(){
         
@@ -72,7 +72,7 @@ class FKOrderItem : NSObject {
     }
     
     
-    // Helper Methods
+    //MARK:  Helper Methods
     
     func print_action(string: String){
         print("\n************* FKOrderItem Log *************")

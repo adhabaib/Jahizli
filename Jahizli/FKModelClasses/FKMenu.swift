@@ -12,7 +12,7 @@ import Firebase
 // FKMenu Class
 class FKMenu: NSObject {
     
-    // public variables
+    //MARK:  public variables
     
     var id: String = "?"
     var menuCategories_en = [String]()
@@ -20,14 +20,14 @@ class FKMenu: NSObject {
     var menuItems = [FKMenuItem]()
     var path = ""
     
-    // public notification tags
+    // MARK: public notification tags
     let NOTIFICATION_UPLOAD = "FKMenu_Single_Uploaded"
     let NOTIFICATION_UPDATED = "FKMenu_Updated"
     let NOTIFICATION_OBSERVE_EMPTY = "FKMenu_Observe_Empty"
     let NOTIFICATION_OBSERVE = "FKMenu_Observe_Done"
     let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
-    // Setup Object Function
+    //MARK:  Setup Object Function
     func setupMenu(categories_en: [String], categories_ar : [String]){
 
         // Setup categories
@@ -45,7 +45,7 @@ class FKMenu: NSObject {
     }
     
     
-    // Firebase Real-time Database Methods
+    //MARK:  Firebase Real-time Database Methods
     
     // (A) Uploading FKMenu to Real-time Database
     func uploadMenuToFirebaseDB(){
@@ -314,7 +314,7 @@ class FKMenu: NSObject {
     }
     
 
-    // Logic Methods
+    //MARK:  Logic Methods
     
     // (A) Add MenuItem to Menu
     func addMenuItem(itemName_en: String, itemName_ar: String, itemInfo_en: String, itemInfo_ar: String, itemImage: Data!, itemPrice: Double, itemCategory: String){
@@ -415,7 +415,7 @@ class FKMenu: NSObject {
     
     
 
-    // Helper Methods
+    //MARK:  Helper Methods
     
     func print_menu(){
         

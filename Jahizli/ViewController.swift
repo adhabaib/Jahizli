@@ -33,13 +33,11 @@ class ViewController: UIViewController {
         item.setupItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main", path: "", menuID: "nil")
         
 
-        let order = FKOrder()
+        order = FKOrder()
         order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
         order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Pleae make sure its hot and spicey!")
         order.uploadNewOrderToFirebaseDB()
     
-        
-        
         /*
         
         self.order = FKOrder()
@@ -94,10 +92,14 @@ class ViewController: UIViewController {
     
     // Helper Functions
     @objc func handleRequest(){
-        self.order.orderStage = "In Progress"
-        self.order.updateOrderToFireBaseDB()
+      
 
     }
-
+    @IBAction func triggerEvent(_ sender: Any) {
+        
+        order.uploadCompletedOrderToFirebaseDB()
+        
+    }
+    
 }
 

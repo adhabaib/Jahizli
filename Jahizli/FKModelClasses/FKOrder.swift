@@ -52,10 +52,7 @@ class FKOrder : NSObject {
         let orderRef = ref.child("FKOrder").childByAutoId()
         self.id = orderRef.key
     
-        
-        // Calculate Total Cost
-        
-        
+
         // Setup JSON Object
         let order = [
             "id" : self.id,

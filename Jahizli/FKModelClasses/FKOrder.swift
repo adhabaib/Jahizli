@@ -20,6 +20,8 @@ class FKOrder : NSObject {
     var orderTotalPrice: Double = 0.0
     var customerPhoneNumber: String = ""
     var supplierID: String = ""
+    var dispatchID: String = ""
+    
     
     var orderItems = [FKOrderItem]()
     
@@ -32,24 +34,25 @@ class FKOrder : NSObject {
     let NOTIFICATION_UPDATED = "FKOrder_Updated_Order"
     
     
-    //MARK: Initializer Method
-    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String){
+    //MARK: *Initializer Method
+    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String){
         
         self.orderDateTime = self.dateTimeToString(date: orderDateTime)
         self.orderStage = orderStage
         self.orderPaymentMethod = orderPaymentMethod
         self.customerPhoneNumber = customerPhoneNumber
         self.supplierID = supplierID
+        self.dispatchID = dispatchID
         
     }
     
     //MARK: Firebase Real-time Database Functions
-    //(A) Upload Order To Real-time Database
-    func uploadOrderToFirebaseDB(){
+    //* (A) Upload Order To Real-time Database
+    func uploadNewOrderToFirebaseDB(){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderRef = ref.child("FKOrder").childByAutoId()
+        let orderRef = ref.child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").childByAutoId()
         self.id = orderRef.key
     
 
@@ -61,21 +64,23 @@ class FKOrder : NSObject {
             "orderPaymentMethod" : self.orderPaymentMethod,
             "orderTotalPrice" : self.getTotalPriceFromOrderItems(),
             "customerPhoneNumber" : self.customerPhoneNumber,
-            "supplierID" : self.supplierID
+            "supplierID" : self.supplierID,
+            "dispatchID" : self.dispatchID
         ]
         
         // Save Object to Real-time Database
+        
         
         orderRef.setValue(order,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
             
             self.print_action(string: "**** FKOrder: order uploaded to Firebase Realtime-Database! ****")
             
-            // Upload Order Items
             self.uploadAllOrderItemsToFireBaseDB()
             
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+            
             }
             
         })
@@ -347,11 +352,11 @@ class FKOrder : NSObject {
     
     
     //MARK:  Firebase Helper Methods
-    //(A) Add Order Item to Order
+    //* (A)Add Order Item to Order
     func addOrderItemToOrder(item: FKMenuItem, quantity: Int, instructions: String){
         let orderItem = FKOrderItem()
         
-        orderItem.setupOrderItem(itemName_en: item.itemName_en, itemName_ar: item.itemName_ar, itemPrice: item.itemPrice, quantity: quantity, instructions: instructions)
+        orderItem.setupOrderItem(itemName_en: item.itemName_en, itemName_ar: item.itemName_ar, itemPrice: item.itemPrice, quantity: quantity, instructions: instructions, dispatchID:  self.dispatchID, orderID: self.id)
        
         self.orderItems.append(orderItem)
     }

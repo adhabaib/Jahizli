@@ -31,6 +31,7 @@ class FKSupplierDispatch : NSObject {
     //MARK:  Initializer Method
     func setupSupplierDisptach(supplierID: String){
         self.supplierID = supplierID
+        self.uploadSupplierDispatchToFireBaseDB()
     }
 
     // MARK: Firebase Real-time Functions
@@ -40,7 +41,7 @@ class FKSupplierDispatch : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let dispatchRef = ref.child("FKSupplierDispatch").childByAutoId()
+        let dispatchRef = ref.child("FKSupplierDispatches").childByAutoId()
         self.id = dispatchRef.key
         
         // Setup JSON Object

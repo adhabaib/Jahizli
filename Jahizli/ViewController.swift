@@ -21,6 +21,25 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
         
+        //let dispatch = FKSupplierDispatch()
+        //dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
+    
+        
+        
+        let now = Date()
+        let club = UIImage(named: "club")
+        let item = FKMenuItem()
+        
+        item.setupItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main", path: "", menuID: "nil")
+        
+
+        let order = FKOrder()
+        order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
+        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Pleae make sure its hot and spicey!")
+        order.uploadNewOrderToFirebaseDB()
+    
+        
+        
         /*
         
         self.order = FKOrder()
@@ -33,9 +52,12 @@ class ViewController: UIViewController {
         
         
         
-      supplier = FKSupplier()
-      supplier.id = "-KwfHDulDICJPIFpfypA"
-      supplier.observeFetchSupplierFromFirebaseDB()
+     // supplier = FKSupplier()
+     // supplier.id = "-KwfHDulDICJPIFpfypA"
+     // supplier.observeFetchSupplierFromFirebaseDB()
+        
+        
+        
       //supplier.fetchLogoImageFromFirebaseStorage()
       //supplier.fetchDisplayImageFromFirebaseStorage()
          

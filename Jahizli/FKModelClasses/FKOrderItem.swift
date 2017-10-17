@@ -19,19 +19,24 @@ class FKOrderItem : NSObject {
     var itemPrice: Double = 0.0
     var quantity : Int = 0
     var orderID: String = ""
+    var dispatchID: String = ""
     var instructions: String = ""
+
+    
     
     
     //MARK:  notification tag
     let NOTIFICATION_UPLOAD = "FKOrderItem_Uploaded"
     
     //MARK:  Initializer Method
-    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String){
+    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String, dispatchID: String, orderID: String){
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
         self.itemPrice = itemPrice
         self.quantity = quantity
         self.instructions = instructions
+        self.orderID = orderID
+        self.dispatchID = dispatchID
       
         
     }
@@ -42,7 +47,7 @@ class FKOrderItem : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderItemRef = ref.child("FKOrderItem").childByAutoId()
+        let orderItemRef = ref.child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.orderID).child("FKOrderItems").childByAutoId()
         self.id = orderItemRef.key
         
         // Setup JSON Object
@@ -53,7 +58,8 @@ class FKOrderItem : NSObject {
             "itemPrice" : String(self.itemPrice),
             "quantity" : String(self.quantity),
             "instructions" : self.instructions,
-            "orderID" : self.orderID
+            "orderID" : self.orderID,
+            "dispatchID" : self.dispatchID
         ]
         
         // Save Object to Real-time Database

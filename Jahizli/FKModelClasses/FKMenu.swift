@@ -52,15 +52,14 @@ class FKMenu: NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let menuRef = ref.child("FKMenu").childByAutoId()
+        let menuRef = ref.child("FKMenus").childByAutoId()
         self.id = menuRef.key
         
         // Setup JSON Object
         let menu = [
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
-            "menuItems" : self.fetchMenuItemsID()
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
             ]
         
         // Save Object to Real-time Database
@@ -82,7 +81,7 @@ class FKMenu: NSObject {
         
         
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKMenu").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -136,7 +135,7 @@ class FKMenu: NSObject {
     // (C) Single Fetch FKMenu From Real-time Database
     func observeSingleFetchMenuFromFirebaseDB(){
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKMenu").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        let ref = Database.database().reference().child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -192,7 +191,7 @@ class FKMenu: NSObject {
     func updateMenuToFirebaseDB(){
         
         print_action(string: "FKMenu: Item updating...")
-        let ref  = Database.database().reference().child("FKMenu").child(self.id)
+        let ref  = Database.database().reference().child("FKMenus").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
@@ -301,15 +300,11 @@ class FKMenu: NSObject {
     
     // (H) Remove Menu From Firebase Realtime Database
     func removeMenuFromFirebaseDB(){
-        
-        // Remove All MenuItems
-        for item in self.menuItems{
-            item.removeItemFromFirebaseDB()
-        }
+        // Clear MenuItems From Array
         self.menuItems.removeAll()
         
-        // Remove Menu Data From Firebase
-        Database.database().reference().child("FKMenu").child(self.id).removeValue()
+        // Remove Menu Data From Firebase -> Removes All FKMenuItems
+        Database.database().reference().child("FKMenus").child(self.id).removeValue()
         
     }
     
@@ -324,8 +319,7 @@ class FKMenu: NSObject {
         item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path, menuID: self.id)
         
         self.menuItems.append(item)
-        self.updateMenuToFirebaseDB()
-   
+        
     }
     
     // (B) Remove MenuItem From Menu

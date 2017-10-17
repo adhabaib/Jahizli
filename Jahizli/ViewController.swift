@@ -21,17 +21,23 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
         
-        
+        /*
         
         self.order = FKOrder()
         self.order.id = "-KwanPBEqoRm3nTR4yiM"
         order.observeFetchOrderFromFirebaseDB()
         
          NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.order.NOTIFICATION_FETCHED_ITEMS), object: nil)
+ 
+         */
+        
+        
         /*
           supplier = FKSupplier()
           supplier.id = "-Kwan2s9lCWgdY508U5R"
           supplier.observeFetchSupplierFromFirebaseDB()
+         
+         */
  
         // Debuging Model Classes
         
@@ -50,7 +56,7 @@ class ViewController: UIViewController {
         supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
         supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
        
-     */
+     
         // Do any additional setup after loading the view, typically from a nib.
     }
 

@@ -46,17 +46,15 @@ class FKMenuItem: NSObject {
         self.itemPrice = itemPrice
         self.itemCategory = itemCategory
         self.menuID = menuID
-        
         self.path = path
         
         self.uploadItemToFirebaseDB()
-        
-        
+
     }
     
     
     //MARK:  Firebase Storage Methods
-    // (A) Upload Item Image to FireBase Storage
+    //* (A) Upload Item Image to FireBase Storage
     func uploadImageToFireBaseStorage(){
         
         // Get a reference to the storage service using the default Firebase App
@@ -91,7 +89,7 @@ class FKMenuItem: NSObject {
         
     }
     
-    //(B) Fetching Item Image from Firebase Storage
+    //(B) *Fetching Item Image from Firebase Storage
     func fetchImageFromFirebaseStorage(){
        
         // Get a reference to the storage service using the default Firebase App
@@ -124,7 +122,7 @@ class FKMenuItem: NSObject {
     }
   
     
-    //(C) Remove/Delete Image from Firebase Storage
+    //(C) *Remove/Delete Image from Firebase Storage
     func removeItemImageFromFirebaseStorage(){
         // Get a reference to the storage service using the default Firebase App
         let storage = Storage.storage()
@@ -146,12 +144,12 @@ class FKMenuItem: NSObject {
     }
     
     // MARK: Firebase Realtime-Database Methods
-    // (A) Uploading Single FKMenuItem to Real-time Database
+    // *(A) Uploading Single FKMenuItem to Real-time Database
     func uploadItemToFirebaseDB(){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let itemRef = ref.child("FKMenuItem").childByAutoId()
+        let itemRef = ref.child("FKMenus").child(self.menuID).child("FKMenuItems").childByAutoId()
         self.id = itemRef.key
         
         // Setup JSON Object
@@ -185,11 +183,11 @@ class FKMenuItem: NSObject {
         
     }
     
-    // (B) Observe/Constant Fetch FKMenuItem Data
+    //* (B) Observe/Constant Fetch FKMenuItem Data
     func observeFetchItemFromFirebaseDB(){
         
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child("FKMenus").child(self.menuID).child("FKMenuItems").child(self.id).observe(DataEventType.value, with: { (snapshot) in
           
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -246,11 +244,11 @@ class FKMenuItem: NSObject {
     }
     
     
-    // (C) Single Observe fetch of item data
+    //* (C) Single Observe fetch of item data
     func observeSingleFetchItemFromFirebaseDB(){
         
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKMenuItem").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        let ref = Database.database().reference().child("FKMenus").child(self.menuID).child("FKMenuItems").child(self.id)
             ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -309,22 +307,22 @@ class FKMenuItem: NSObject {
     }
     
     
-    // (D) Remove All Attached Observers to Item
+    // *(D) Remove All Attached Observers to Item
     func removeItemObserver(){
-        Database.database().reference().child("FKMenuItem").removeAllObservers()
+        Database.database().reference().child("FKMenus").child(self.menuID).child("FKMenuItems").child(self.id).removeAllObservers()
     }
     
-    // (E) Remove Object From Firebase
+    // *(E) Remove Object From Firebase
     func removeItemFromFirebaseDB(){
-        Database.database().reference().child("FKMenuItem").child(self.id).removeValue()
+        Database.database().reference().child("FKMenus").child(self.menuID).child("FKMenuItems").child(self.id).removeValue()
         self.removeItemImageFromFirebaseStorage()
     }
     
-    // (F) Update MenuItem to Firebase
+    // *(F) Update MenuItem to Firebase
     func updateItemToFirebaseDB(){
         
         print_action(string: "FKMenuItem: Item updating...")
-        let ref  = Database.database().reference().child("FKMenuItem").child(self.id)
+        let ref  = Database.database().reference().child("FKMenus").child(self.menuID).child("FKMenuItems").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,

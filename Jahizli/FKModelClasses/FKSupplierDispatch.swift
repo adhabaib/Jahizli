@@ -21,9 +21,8 @@ class FKSupplierDispatch : NSObject {
     
     //MARK:  notification tags
     let NOTIFICATION_UPLOADED = "FKSupplierDispatch_Uploaded"
-    let NOTIFICATION_FETCHED = "FKSupplierDispatch_Fetched"
-    let NOTIFICATION_OBSERVE_EMPTY = "FKSupplier_Fetch_Empty"
     let NOTIFICATION_UPDATED = "FKSupplierDispatch_Updated"
+    let NOTIFICATION_UPDATED_SUPPLIER = "FKSupplierDispatch_Updated_FKSupplier_Status"
     let NOTIFICATION_FETCHED_ORDERS = "FKSupplierDispatch_Fetched_In_Progress_Orders"
     let NOTIFICATION_UPDATED_ORDER = "FKSupplierDispatch_Updated_In_Progress_Orders"
     let NOTIFICATION_OBSERVE_ORDERS_EMPTY = "FKSupplier_Fetch_Orders_Empty"
@@ -33,7 +32,7 @@ class FKSupplierDispatch : NSObject {
         self.supplierID = supplierID
         self.uploadSupplierDispatchToFireBaseDB()
     }
-
+    
     // MARK: Firebase Real-time Functions
     
     // (A) Upload SupplierDispatch To Firebase
@@ -63,64 +62,16 @@ class FKSupplierDispatch : NSObject {
             
         })
     }
-    
-    // (B) Fetch Supplier Dispatch From Firebase
-    func observeSingleFetchSupplierDispatchFromFireBaseDB(){
-        // Call Observe on Reference
-        let ref = Database.database().reference().child("FKSupplierDispatch").queryOrdered(byChild:"id").queryEqual(toValue: id)
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            // Get Data From Real-time Database
-            let postDict = snapshot.value as? NSDictionary
-            
-            // No Item Found Return Failed to Find
-            if(postDict == nil){
-                self.print_action(string: "**** FKSupplierDispatch: dispatch was not found/empty. ****")
-                
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_EMPTY), object: nil)
-                }
-                
-            }
-            else{
-                // Get ID
-                let dispatchID = postDict?.allKeys.first as! String
-                
-                // Get Dispatch Data
-                let dispatchData = postDict?[dispatchID] as? NSDictionary // array of dictionaries
-                
-                self.print_action(string: "**** FKSupplierDispatch: dispatch sucessfully found! ****")
-                
-                // Init Case Object
-                self.id = dispatchID
-                self.supplierID = dispatchData!["supplierID"] as! String
 
-                self.print_action(string: "**** FKSupplierDispatch: dispatch Object Initialized****")
-                
-                // -> Print Dispath Info
-                
-                // -> Fetch All Pending Orders
-                
-                
-            }
-            
-            DispatchQueue.main.async {
-                // POST NOTIFICATION FOR COMPLETION
-                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCHED), object: nil)
-                
-            }
-        })
-    }
-    
-    // (C) Remove Supplier Dispatch From Firebase
+    // (B) Remove Supplier Dispatch From Firebase
     func removeSupplierDispatchFromFireBaseDB(){
-         Database.database().reference().child("FKSupplierDispatch").child(self.id).removeValue()
+        Database.database().reference().child("FKSupplierDispatches").child(self.id).removeValue()
     }
     
-    // (D) Update Supplier Dispatch To Firebase
+    // (C) Update Supplier Dispatch To Firebase
     func updateSupplierDispatchToFireBaseDB(){
         print_action(string: "FKSupplierDispatch: dispatch updating...")
-        let ref  = Database.database().reference().child("FKSupplierDispatch").child(self.id)
+        let ref  = Database.database().reference().child("FKSupplierDispatches").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
@@ -137,7 +88,7 @@ class FKSupplierDispatch : NSObject {
         
     }
     
-    // (E) Update Supplier Status
+    // (D) Update Supplier Status
     func updateSupplierStatus(status: String){
         print_action(string: "FKSupplierDispatch: SUPPLIER STATUS updating...")
         let ref  = Database.database().reference().child("FKSupplier").child(self.supplierID).child("status")
@@ -148,17 +99,17 @@ class FKSupplierDispatch : NSObject {
                 
                 // POST NOTIFICATION FOR COMPLETION
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPDATED), object: nil)
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPDATED_SUPPLIER), object: nil)
                 }
                 
         })
     }
     
-    // (F) Observe/ Fetch All Pending Orders From Firebase
+    //(E) Observe/ Fetch All Pending Orders From Firebase
     func observeFetchAllPendingOrdersFromFireBaseDB(){
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKOrder").queryOrdered(byChild:"supplierID").queryEqual(toValue: self.supplierID)
-            ref.observe(DataEventType.value, with: { (snapshot) in
+        let ref = Database.database().reference().child("FKSupplierDispatches").child(self.id).child("FKOrdersWaiting")
+        ref.observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -173,35 +124,85 @@ class FKSupplierDispatch : NSObject {
                 
             }
             else{
+                
+                self.incompletedOrders.removeAll()
+                
                 for child in snapshot.children.allObjects as! [DataSnapshot]  {
-                    
-                    // Create FKOrder
+                 
+                    // Create Order
+                    self.print_action(string: "**** FKSupplierDispatch: order sucessfully found! ****")
                     let order = FKOrder()
+
+                    for grandchild in child.children.allObjects as! [DataSnapshot] {
+                       
+                        // Setup Order Object Fields
+                        if(grandchild.key == "id"){
+                            order.id = grandchild.value as! String
+                            order.dispatchID = self.id
+                        }
+                        else if(grandchild.key == "orderDateTime"){
+                            order.orderDateTime = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderStage"){
+                            order.orderStage = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderPaymentMethod"){
+                            order.orderPaymentMethod = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderTotalPrice"){
+                            order.orderTotalPrice = Double(grandchild.value as! String)!
+                        }
+                        else if(grandchild.key == "customerPhoneNumber"){
+                            order.customerPhoneNumber = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "supplierID"){
+                            order.supplierID = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "FKOrderItems"){
+                            
+                            for data in grandchild.children.allObjects as! [DataSnapshot] {
+                                
+                                self.print_action(string: "**** FKSupplierDispatch: items sucessfully found! ****")
+                                
+                                // Create FKMenuItem
+                                let orderItem = FKOrderItem()
+                                
+                                // Parse Data to new Item
+                                let orderItemData = data.value as? NSDictionary
+               
+                                // Init Order Item Object
+                                
+                                orderItem.id =  orderItemData!["id"] as! String
+                                orderItem.itemName_en = orderItemData!["itemName_en"] as! String
+                                orderItem.itemName_ar = orderItemData!["itemName_ar"] as! String
+                                orderItem.itemPrice = Double(orderItemData!["itemPrice"] as! String)!
+                                orderItem.instructions = orderItemData!["instructions"] as! String
+                                orderItem.quantity = Int(orderItemData!["quantity"] as! String)!
+                                orderItem.dispatchID = self.id
+                                orderItem.orderID = order.id
+                                
+                                order.orderItems.append(orderItem)
+                                
+                                self.print_action(string: "**** FKSupplierDispatch: Order Item Object Initialized****")
+                                
+                                
+                            }
+                            
+                            
+                            
+                        }
                     
-                    // Parse Data to new Item
-                    let orderData = child.value as? NSDictionary
-                    let orderID = postDict?.allKeys.first as! String
-                    
-                    self.print_action(string: "**** FKSupplierDispatch: orders sucessfully found! ****")
-                    
-                    // Init Case Object
-                    order.id = orderID
-                    order.orderDateTime = orderData!["orderDateTime"] as! String
-                    order.orderStage = orderData!["orderStage"] as! String
-                    order.orderPaymentMethod = orderData!["orderPaymentMethod"] as! String
-                    order.orderTotalPrice = Double(orderData!["orderTotalPrice"] as! String)!
-                    order.customerPhoneNumber = orderData!["customerPhoneNumber"] as! String
-                    order.supplierID = orderData!["supplierID"] as! String
-                    
+                      
+                    }
                     
                     self.incompletedOrders.append(order)
-                    
-                    self.print_action(string: "**** FKSupplierDisaptch: Order Object Initialized****")
-                    
+
                 }
-                
-                // -> Print All Orders
+
             }
+            
+            self.normalizeOrderItems()
+            self.print_incomplete_orders()
             
             DispatchQueue.main.async {
                 // POST NOTIFICATION FOR COMPLETION
@@ -211,27 +212,85 @@ class FKSupplierDispatch : NSObject {
         })
     }
     
-    // (G) Observe/ Single Fetch All Pending Orders From Firebase
-    
-    
+
     // MARK:  Firebase Messenging Functions
     
-    
-    
 
+    
     // MARK: Logical Functions
     // (A) Update Order Status
+    func updateOrderStatus(order: FKOrder, status: String){
+        
+        // Find order in incomplete list
+        for e in self.incompletedOrders{
+            if (e.id == order.id){
+                e.orderStage = status
+                e.updateIncompleteOrderToFireBaseDB()
+            }
+        }
+        
+        
+    }
     
     // (B) Complete Order
+    func completeOrder(order: FKOrder){
+        
+        // Find order in incomplete list
+        var i = 0
+        for e in self.incompletedOrders{
+            if (e.id == order.id){
+                e.orderStage = "COMPLETED"
+                e.uploadAllCompletedOrderItemsToFireBaseDB()
+                self.completedOrders.append(e)
+                self.incompletedOrders.remove(at: i)
+                
+            }
+            i = i + 1
+        }
+        
+    }
     
     // (C) Cancel Order
+    func cancelOrder(order: FKOrder){
+        // Find order in incomplete list
+        var i = 0
+        for e in self.incompletedOrders{
+            if (e.id == order.id){
+                e.orderStage = "CANCELLED"
+                e.uploadAllCompletedOrderItemsToFireBaseDB()
+                self.completedOrders.append(e)
+                self.incompletedOrders.remove(at: i)
+                
+            }
+            i = i + 1
+        }
+    }
     
     //MARK: Helper Functions
+    
+    func normalizeOrderItems(){
+        for order in self.incompletedOrders{
+            for item in order.orderItems{
+                item.orderID = order.id
+            }
+            
+        }
+    }
+    
     func print_action(string: String){
         print("\n************* FKSupplierDispatch Log *************")
         print(string)
         print("******************************************\n")
         
+    }
+    
+    func print_incomplete_orders(){
+        print("\n\n****************************************** FKSupplierDispatch Pending Orders ****************************************** ")
+        print("PENDING ORDER COUNT COUNT: \(self.incompletedOrders.count)\n")
+        for order in self.incompletedOrders {
+            order.print_order_items()
+        }
+        print("*************************************************************************************************************************\n\n")
     }
     
     

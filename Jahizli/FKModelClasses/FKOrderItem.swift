@@ -66,7 +66,7 @@ class FKOrderItem : NSObject {
         
         orderItemRef.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
             
-            self.print_action(string: "**** FKOrderITem: item uploaded to Firebase Realtime-Database! ****")
+            self.print_action(string: "**** FKOrderITem: item uploaded to Firebase Realtime-Database! ****\n\(item)")
             
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
@@ -101,7 +101,7 @@ class FKOrderItem : NSObject {
         
         orderItemRef.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
             
-            self.print_action(string: "**** FKOrderITem: item uploaded to Firebase Realtime-Database! ****")
+            self.print_action(string: "**** FKOrderItem: item uploaded to Firebase Realtime-Database! ****\n\(item)")
             
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {

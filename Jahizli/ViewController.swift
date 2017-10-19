@@ -21,6 +21,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
         
+        
+        
+        
+        
         //let dispatch = FKSupplierDispatch()
         //dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
     
@@ -44,7 +48,7 @@ class ViewController: UIViewController {
         order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Pleae make sure its hot and spicey!")
         order.uploadNewOrderToFirebaseDB()
  
-         */
+ 
 
         
         let dispatch = FKSupplierDispatch()
@@ -53,7 +57,7 @@ class ViewController: UIViewController {
         
         dispatch.observeFetchAllPendingOrdersFromFireBaseDB()
         
-        /*
+        
         
         self.order = FKOrder()
         self.order.id = "-KwanPBEqoRm3nTR4yiM"

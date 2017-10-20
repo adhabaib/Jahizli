@@ -21,10 +21,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
         
-        
         let now = Date()
         let club = UIImage(named: "club")
         let item = FKMenuItem()
+        
         item.itemName_en = "Kabab"
         item.itemInfo_ar = "**"
         item.itemInfo_en = "Yummy!"
@@ -36,7 +36,9 @@ class ViewController: UIViewController {
         item.menuID = ""
         
         order = FKOrder()
-        order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "Cash", customerPhoneNumber: "97149000", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
+        
+        
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
         order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
         
         item.itemName_en = "Shwarma"
@@ -49,7 +51,7 @@ class ViewController: UIViewController {
         item.path = ""
         item.menuID = ""
         
-        order.addOrderItemToOrder(item: item, quantity: 1, instructions: "Extra taheena sauce.")
+        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Extra taheena sauce.")
         
         item.itemName_en = "Fatoosh"
         item.itemInfo_ar = "**"
@@ -61,7 +63,7 @@ class ViewController: UIViewController {
         item.path = ""
         item.menuID = ""
         
-        order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No instructions provided.")
+        order.addOrderItemToOrder(item: item, quantity: 3, instructions: "No instructions provided.")
         
         item.itemName_en = "Pepsi"
         item.itemInfo_ar = "**"
@@ -79,11 +81,14 @@ class ViewController: UIViewController {
         order.uploadNewOrderToFirebaseDB()
         
         
-        //let dispatch = FKSupplierDispatch()
-        //dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
-    
+        
+        
         
         /*
+        let dispatch = FKSupplierDispatch()
+        dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
+    
+       
         let now = Date()
         let club = UIImage(named: "club")
         let item = FKMenuItem()
@@ -154,6 +159,13 @@ class ViewController: UIViewController {
  
          
      */
+        
+        
+        
+        
+        
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 

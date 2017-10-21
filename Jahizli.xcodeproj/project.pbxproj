@@ -16,6 +16,8 @@
 		150C2D551F816B91000C2891 /* JahizliTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D541F816B91000C2891 /* JahizliTests.swift */; };
 		150C2D601F816B92000C2891 /* JahizliUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D5F1F816B92000C2891 /* JahizliUITests.swift */; };
 		15379D371F8BF84C0075EDDB /* FKMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15379D361F8BF84C0075EDDB /* FKMenuItem.swift */; };
+		1548BBB81F9BBA74000899E7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1548BBB71F9BBA74000899E7 /* AVFoundation.framework */; };
+		1548BBBA1F9BBA79000899E7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1548BBB91F9BBA78000899E7 /* AudioToolbox.framework */; };
 		154AC7751F8E8D54009EB6EC /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AC7741F8E8D54009EB6EC /* Extentions.swift */; };
 		154AC77C1F8E97A7009EB6EC /* FKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AC77B1F8E97A7009EB6EC /* FKMenu.swift */; };
 		154AC7841F93F3A1009EB6EC /* FKSupplier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AC7831F93F3A1009EB6EC /* FKSupplier.swift */; };
@@ -62,6 +64,8 @@
 		150C2D5F1F816B92000C2891 /* JahizliUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JahizliUITests.swift; sourceTree = "<group>"; };
 		150C2D611F816B92000C2891 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		15379D361F8BF84C0075EDDB /* FKMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKMenuItem.swift; sourceTree = "<group>"; };
+		1548BBB71F9BBA74000899E7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		1548BBB91F9BBA78000899E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		154AC7741F8E8D54009EB6EC /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		154AC77B1F8E97A7009EB6EC /* FKMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKMenu.swift; sourceTree = "<group>"; };
 		154AC7831F93F3A1009EB6EC /* FKSupplier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKSupplier.swift; sourceTree = "<group>"; };
@@ -84,6 +88,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1548BBBA1F9BBA79000899E7 /* AudioToolbox.framework in Frameworks */,
+				1548BBB81F9BBA74000899E7 /* AVFoundation.framework in Frameworks */,
 				E4700157CFCCB98D647C3D81 /* Pods_Jahizli.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,6 +186,8 @@
 		98928F2625FDB03DE2883F01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1548BBB91F9BBA78000899E7 /* AudioToolbox.framework */,
+				1548BBB71F9BBA74000899E7 /* AVFoundation.framework */,
 				06604E8F35C937F821F8D31B /* Pods_Jahizli.framework */,
 				7A070E1AFA56E508DA2C333C /* Pods_JahizliTests.framework */,
 				CFDE9DCEAE523C00D625FCD1 /* Pods_JahizliUITests.framework */,

@@ -8,6 +8,8 @@
 
 import Foundation
 import Firebase
+import AudioToolbox
+import AVFoundation
 
 //FKSupplierDispatch Class
 class FKSupplierDispatch : NSObject {
@@ -18,6 +20,8 @@ class FKSupplierDispatch : NSObject {
     
     var incompletedOrders = [FKOrder]()
     var completedOrders = [FKOrder]()
+    
+    var player: AVAudioPlayer?
     
     //MARK:  notification tags
     let NOTIFICATION_UPLOADED = "FKSupplierDispatch_Uploaded"
@@ -108,6 +112,8 @@ class FKSupplierDispatch : NSObject {
     //(E) Observe/ Fetch All Pending Orders From Firebase
     func observeFetchAllPendingOrdersFromFireBaseDB(){
         
+        var old_count = 0
+        
         // Call Observe on Reference
         let ref = Database.database().reference().child("FKSupplierDispatches").child(self.id).child("FKOrdersWaiting")
         ref.observe(DataEventType.value, with: { (snapshot) in
@@ -126,6 +132,7 @@ class FKSupplierDispatch : NSObject {
             }
             else{
                 
+                old_count = self.incompletedOrders.count
                 self.incompletedOrders.removeAll()
                 
                 for child in snapshot.children.allObjects as! [DataSnapshot]  {
@@ -205,6 +212,7 @@ class FKSupplierDispatch : NSObject {
             }
             
             self.normalizeOrderItems()
+            self.play_alert(old_count: old_count, new_count: self.incompletedOrders.count)
             self.print_incomplete_orders()
             
             DispatchQueue.main.async {
@@ -282,6 +290,12 @@ class FKSupplierDispatch : NSObject {
         self.incompletedOrders.reverse()
     }
     
+    func play_alert(old_count: Int, new_count: Int){
+        if(old_count < new_count){
+            self.playSound()
+        }
+    }
+    
     func print_action(string: String){
         print("\n************* FKSupplierDispatch Log *************")
         print(string)
@@ -298,6 +312,29 @@ class FKSupplierDispatch : NSObject {
         print("*************************************************************************************************************************\n\n")
     }
     
+    func playSound() {
+        guard let url = Bundle.main.url(forResource: "alert", withExtension: "mp3") else { return }
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            
+            
+            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+            
+            /* iOS 10 and earlier require the following line:
+             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
+            
+            guard let player = player else { return }
+            
+            player.play()
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    
     
 }
-

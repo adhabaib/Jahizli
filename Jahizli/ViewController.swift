@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 
 class ViewController: UIViewController {
@@ -22,7 +23,8 @@ class ViewController: UIViewController {
         print("Debug: Proceed to testing... now!")
        
         
-        
+        let token = Messaging.messaging().fcmToken
+        print("FCM token: \(token ?? "")")
         
         
         
@@ -187,4 +189,7 @@ class ViewController: UIViewController {
     }
     
 }
+
+
+
 

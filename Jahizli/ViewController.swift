@@ -20,65 +20,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
-        
-        let now = Date()
-        let club = UIImage(named: "club")
-        let item = FKMenuItem()
-        
-        item.itemName_en = "Kabab"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "Yummy!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 2.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order = FKOrder()
-        
-        
-        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
-        order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
-        
-        item.itemName_en = "Shwarma"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "With tomatoes, taheena and the best sauce in town!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 2.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Extra taheena sauce.")
-        
-        item.itemName_en = "Fatoosh"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "All fresh and green, as healthy as it gets!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 1.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order.addOrderItemToOrder(item: item, quantity: 3, instructions: "No instructions provided.")
-        
-        item.itemName_en = "Pepsi"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "Yummy!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 0.500
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Room temprature.")
-        
-        
-        order.uploadNewOrderToFirebaseDB()
+       
         
         
         
@@ -182,7 +124,65 @@ class ViewController: UIViewController {
     }
     @IBAction func triggerEvent(_ sender: Any) {
         
-        order.uploadCompletedOrderToFirebaseDB()
+        
+        let now = Date()
+        let club = UIImage(named: "club")
+        let item = FKMenuItem()
+        
+        item.itemName_en = "Kabab"
+        item.itemInfo_ar = "**"
+        item.itemInfo_en = "Yummy!"
+        item.itemInfo_ar = "**"
+        item.itemImage = club?.jpeg
+        item.itemPrice = 2.00
+        item.itemCategory = "Sandwitches"
+        item.path = ""
+        item.menuID = ""
+        
+        order = FKOrder()
+        
+        
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
+        order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
+        
+        item.itemName_en = "Shwarma"
+        item.itemInfo_ar = "**"
+        item.itemInfo_en = "With tomatoes, taheena and the best sauce in town!"
+        item.itemInfo_ar = "**"
+        item.itemImage = club?.jpeg
+        item.itemPrice = 2.00
+        item.itemCategory = "Sandwitches"
+        item.path = ""
+        item.menuID = ""
+        
+        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Extra taheena sauce.")
+        
+        item.itemName_en = "Fatoosh"
+        item.itemInfo_ar = "**"
+        item.itemInfo_en = "All fresh and green, as healthy as it gets!"
+        item.itemInfo_ar = "**"
+        item.itemImage = club?.jpeg
+        item.itemPrice = 1.00
+        item.itemCategory = "Sandwitches"
+        item.path = ""
+        item.menuID = ""
+        
+        order.addOrderItemToOrder(item: item, quantity: 3, instructions: "No instructions provided.")
+        
+        item.itemName_en = "Pepsi"
+        item.itemInfo_ar = "**"
+        item.itemInfo_en = "Yummy!"
+        item.itemInfo_ar = "**"
+        item.itemImage = club?.jpeg
+        item.itemPrice = 0.500
+        item.itemCategory = "Sandwitches"
+        item.path = ""
+        item.menuID = ""
+        
+        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Room temprature.")
+        
+        
+        order.uploadNewOrderToFirebaseDB()
         
     }
     

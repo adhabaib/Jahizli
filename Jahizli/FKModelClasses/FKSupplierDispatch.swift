@@ -62,7 +62,7 @@ class FKSupplierDispatch : NSObject {
             
         })
     }
-
+    
     // (B) Remove Supplier Dispatch From Firebase
     func removeSupplierDispatchFromFireBaseDB(){
         Database.database().reference().child("FKSupplierDispatches").child(self.id).removeValue()
@@ -107,6 +107,7 @@ class FKSupplierDispatch : NSObject {
     
     //(E) Observe/ Fetch All Pending Orders From Firebase
     func observeFetchAllPendingOrdersFromFireBaseDB(){
+        
         // Call Observe on Reference
         let ref = Database.database().reference().child("FKSupplierDispatches").child(self.id).child("FKOrdersWaiting")
         ref.observe(DataEventType.value, with: { (snapshot) in
@@ -128,13 +129,13 @@ class FKSupplierDispatch : NSObject {
                 self.incompletedOrders.removeAll()
                 
                 for child in snapshot.children.allObjects as! [DataSnapshot]  {
-                 
+                    
                     // Create Order
                     self.print_action(string: "**** FKSupplierDispatch: order sucessfully found! ****")
                     let order = FKOrder()
-
+                    
                     for grandchild in child.children.allObjects as! [DataSnapshot] {
-                       
+                        
                         // Setup Order Object Fields
                         if(grandchild.key == "id"){
                             order.id = grandchild.value as! String
@@ -169,7 +170,7 @@ class FKSupplierDispatch : NSObject {
                                 
                                 // Parse Data to new Item
                                 let orderItemData = data.value as? NSDictionary
-               
+                                
                                 // Init Order Item Object
                                 
                                 orderItem.id =  orderItemData!["id"] as! String
@@ -191,14 +192,16 @@ class FKSupplierDispatch : NSObject {
                             
                             
                         }
-                    
-                      
+                        
+                        
                     }
                     
+                    
                     self.incompletedOrders.append(order)
-
+                    
+                    
                 }
-
+                
             }
             
             self.normalizeOrderItems()
@@ -212,10 +215,10 @@ class FKSupplierDispatch : NSObject {
         })
     }
     
-
+    
     // MARK:  Firebase Messenging Functions
     
-
+    
     
     // MARK: Logical Functions
     // (A) Update Order Status
@@ -240,7 +243,7 @@ class FKSupplierDispatch : NSObject {
         for e in self.incompletedOrders{
             if (e.id == order.id){
                 e.orderStage = "COMPLETED"
-                e.uploadAllCompletedOrderItemsToFireBaseDB()
+                e.uploadCompletedOrderToFirebaseDB()
                 self.completedOrders.append(e)
                 self.incompletedOrders.remove(at: i)
                 
@@ -275,6 +278,8 @@ class FKSupplierDispatch : NSObject {
             }
             
         }
+        
+        self.incompletedOrders.reverse()
     }
     
     func print_action(string: String){
@@ -295,3 +300,4 @@ class FKSupplierDispatch : NSObject {
     
     
 }
+

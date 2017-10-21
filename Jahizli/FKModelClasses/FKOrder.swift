@@ -94,7 +94,7 @@ class FKOrder : NSObject {
         // Remove Order From Waiting List
         
         // Remove Waiting order From Firebase -> Removes All order items
-        Database.database().reference().child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
+    Database.database().reference().child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
         
 
         // Create/Retrieve Reference

@@ -25,6 +25,9 @@ class FKSupplier: NSData {
     var phoneNumber: String = ""
     var balance: Double = 0.0
     var creditRate: Double = 0.0
+    var category: String = ""
+    var country: String = ""
+    
     var menu: FKMenu!
     
     var logo : Data!
@@ -42,7 +45,7 @@ class FKSupplier: NSData {
     
     
     //MARK:  Initiliazer
-    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String]){
+    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String], country: String, category: String){
         
         // Setup basic variables
         self.name_en = name_en
@@ -56,6 +59,8 @@ class FKSupplier: NSData {
         self.creditRate = creditRate
         self.logo = logo
         self.displayImage = displayImage
+        self.category = category
+        self.country = country
         
         // Setup Menu
         self.menu = FKMenu()
@@ -267,7 +272,9 @@ class FKSupplier: NSData {
             "phoneNumber" : self.phoneNumber ,
             "balance" : String(self.balance) ,
             "creditRate" : String(self.creditRate),
-            "menu" : self.menu.id
+            "menu" : self.menu.id,
+            "country" : self.country,
+            "category" : self.category
         ]
         
         // Save Object to Real-time Database
@@ -326,6 +333,9 @@ class FKSupplier: NSData {
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
                 self.balance = Double(supplierData!["balance"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
+                self.country = supplierData!["country"] as! String
+                self.category = supplierData!["category"] as! String
+       
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
                 self.menu.path = self.path
@@ -389,6 +399,9 @@ class FKSupplier: NSData {
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
                 self.balance = Double(supplierData!["balance"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
+                self.country = supplierData!["country"] as! String
+                self.category = supplierData!["category"] as! String
+        
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
                 self.menu.path = self.path
@@ -427,7 +440,9 @@ class FKSupplier: NSData {
             "phoneNumber" : self.phoneNumber ,
             "balance" : String(self.balance) ,
             "creditRate" : String(self.creditRate),
-            "menu" : self.menu.id
+            "menu" : self.menu.id,
+            "country" : self.country,
+            "category" : self.category
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -474,7 +489,9 @@ class FKSupplier: NSData {
             "phoneNumber" : self.phoneNumber ,
             "balance" : String(self.balance) ,
             "creditRate" : String(self.creditRate),
-            "menu" : self.menu.id
+            "menu" : self.menu.id,
+            "country" : self.country,
+            "category" : self.category
         ]
         
         print(supplier)

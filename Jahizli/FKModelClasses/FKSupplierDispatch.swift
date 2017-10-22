@@ -166,6 +166,9 @@ class FKSupplierDispatch : NSObject {
                         else if(grandchild.key == "supplierID"){
                             order.supplierID = grandchild.value as! String
                         }
+                        else if(grandchild.key == "customerFCMToken"){
+                            order.customerFCMToken = grandchild.value as! String
+                        }
                         else if(grandchild.key == "FKOrderItems"){
                             
                             for data in grandchild.children.allObjects as! [DataSnapshot] {
@@ -226,7 +229,54 @@ class FKSupplierDispatch : NSObject {
     
     // MARK:  Firebase Messenging Functions
     
+    //(A) HTTP POST TO FIREBASE SERVER
+    func sendFireBaseNotification(deviceToken: String, message: String){
+        let url = URL(string: "https://fcm.googleapis.com/fcm/send")!
+        
+        var request = URLRequest(url: url)
+        
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("key=AAAADuRmp-o:APA91bE-LOJp8XDHG1CdSHdqQDbim4jrPkUUnq3Y6nJsSoAVqJNirdnqkSgZiB7msA19moI0_MT2UhVuYErg4bOjn5N-rA5CL9Apygg7gZt2ddj_4fR6ywnEljo60ZIuCFwHEvNzkxbr", forHTTPHeaderField:"Authorization")
+        request.httpMethod = "POST"
+        
+        // prepare json data
+        let json: [String: Any] =
+            [
+                "notification" :
+                    [ "title": "Jahezli",
+                      "text": message]
+                ,
+                
+                "project_id": "jahizli-918ae",
+                "to": deviceToken
+        ]
+        
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        
+        
+        request.httpBody = jsonData
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {                                                 // check for fundamental networking error
+                print("error=\(error)")
+                return
+            }
+            
+            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
+                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("response = \(response)")
+            }
+            
+            let responseString = String(data: data, encoding: .utf8)
+            print("responseString = \(responseString)")
+        }
+        task.resume()
+    }
     
+    //(B) Send Notification To Specific Order Holder
+    func notifyCustomerForOrder(order: FKOrder, msg: String){
+        self.sendFireBaseNotification(deviceToken: order.customerFCMToken, message: msg)
+    }
     
     // MARK: Logical Functions
     // (A) Update Order Status
@@ -338,3 +388,4 @@ class FKSupplierDispatch : NSObject {
     
     
 }
+

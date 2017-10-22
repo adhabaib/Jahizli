@@ -11,10 +11,12 @@ import Firebase
 
 
 class ViewController: UIViewController {
-    @IBOutlet weak var imageView: UIImageView!
+   
+    @IBOutlet weak var textfield: UITextField!
     
     var supplier: FKSupplier!
     var order: FKOrder!
+    var user: FKCustomer!
     let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
     
@@ -22,13 +24,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("Debug: Proceed to testing... now!")
        
+        user = FKCustomer()
+        user.isUserSignedIn()
         
-        let token = Messaging.messaging().fcmToken
-        print("FCM token: \(token ?? "")")
-        
-        
+     
         
         /*
+         //
         let dispatch = FKSupplierDispatch()
         dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
     
@@ -118,6 +120,14 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func triggerAuthCode(_ sender: Any) {
+        user.phoneNumber = "+96599166300"
+        user.sendVerficationCodeForAuth()
+    }
+    
+    @IBAction func triggerAuthEvent(_ sender: Any) {
+        user.signInWithSMSVerificationCode(verificationCode: self.textfield.text!)
+    }
     
     // Helper Functions
     @objc func handleRequest(){
@@ -144,7 +154,7 @@ class ViewController: UIViewController {
         order = FKOrder()
         
         
-        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy", customerFCMToken: self.user.fcmToken)
         order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
         
         item.itemName_en = "Shwarma"

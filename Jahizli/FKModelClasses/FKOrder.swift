@@ -21,6 +21,7 @@ class FKOrder : NSObject {
     var customerPhoneNumber: String = ""
     var supplierID: String = ""
     var dispatchID: String = ""
+    var customerFCMToken: String = ""
     
     
     var orderItems = [FKOrderItem]()
@@ -35,7 +36,7 @@ class FKOrder : NSObject {
     
     
     //MARK: Initializer Method
-    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String){
+    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String, customerFCMToken: String){
         
         self.orderDateTime = self.dateTimeToString(date: orderDateTime)
         self.orderStage = orderStage
@@ -43,6 +44,7 @@ class FKOrder : NSObject {
         self.customerPhoneNumber = customerPhoneNumber
         self.supplierID = supplierID
         self.dispatchID = dispatchID
+        self.customerFCMToken = customerFCMToken
         
     }
     
@@ -65,7 +67,8 @@ class FKOrder : NSObject {
             "orderTotalPrice" : self.getTotalPriceFromOrderItems(),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken
         ]
         
         // Save Object to Real-time Database
@@ -112,7 +115,8 @@ class FKOrder : NSObject {
             "orderTotalPrice" : self.getTotalPriceFromOrderItems(),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken
         ]
         
         // Save Object to Real-time Database
@@ -168,7 +172,8 @@ class FKOrder : NSObject {
             "orderTotalPrice" : String(self.orderTotalPrice),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -251,7 +256,8 @@ class FKOrder : NSObject {
             "orderTotalPrice" : String(self.orderTotalPrice),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken
             ]
         
         print(order)
@@ -271,7 +277,8 @@ class FKOrder : NSObject {
             "orderTotalPrice" : String(self.orderTotalPrice),
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken
         ]
         print(order)
         

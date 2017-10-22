@@ -15,6 +15,7 @@
 		150C2D4A1F816B91000C2891 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 150C2D481F816B91000C2891 /* LaunchScreen.storyboard */; };
 		150C2D551F816B91000C2891 /* JahizliTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D541F816B91000C2891 /* JahizliTests.swift */; };
 		150C2D601F816B92000C2891 /* JahizliUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150C2D5F1F816B92000C2891 /* JahizliUITests.swift */; };
+		151868F71F9D1394006FFD43 /* FKCustomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151868F61F9D1394006FFD43 /* FKCustomer.swift */; };
 		15379D371F8BF84C0075EDDB /* FKMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15379D361F8BF84C0075EDDB /* FKMenuItem.swift */; };
 		1548BBB81F9BBA74000899E7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1548BBB71F9BBA74000899E7 /* AVFoundation.framework */; };
 		1548BBBA1F9BBA79000899E7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1548BBB91F9BBA78000899E7 /* AudioToolbox.framework */; };
@@ -64,6 +65,7 @@
 		150C2D5F1F816B92000C2891 /* JahizliUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JahizliUITests.swift; sourceTree = "<group>"; };
 		150C2D611F816B92000C2891 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		151868F41F9BC859006FFD43 /* Jahizli.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Jahizli.entitlements; sourceTree = "<group>"; };
+		151868F61F9D1394006FFD43 /* FKCustomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKCustomer.swift; sourceTree = "<group>"; };
 		15379D361F8BF84C0075EDDB /* FKMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKMenuItem.swift; sourceTree = "<group>"; };
 		1548BBB71F9BBA74000899E7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		1548BBB91F9BBA78000899E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -181,6 +183,7 @@
 				154AC7851F95198C009EB6EC /* FKOrderItem.swift */,
 				154AC7871F951D53009EB6EC /* FKOrder.swift */,
 				154AC7891F95627F009EB6EC /* FKSupplierDispatch.swift */,
+				151868F61F9D1394006FFD43 /* FKCustomer.swift */,
 			);
 			path = FKModelClasses;
 			sourceTree = "<group>";
@@ -503,6 +506,7 @@
 				154AC7841F93F3A1009EB6EC /* FKSupplier.swift in Sources */,
 				150C2D3F1F816B91000C2891 /* ViewController.swift in Sources */,
 				154AC7751F8E8D54009EB6EC /* Extentions.swift in Sources */,
+				151868F71F9D1394006FFD43 /* FKCustomer.swift in Sources */,
 				150C2D3D1F816B91000C2891 /* AppDelegate.swift in Sources */,
 				150C2D451F816B91000C2891 /* Jahizli.xcdatamodeld in Sources */,
 				154AC78A1F95627F009EB6EC /* FKSupplierDispatch.swift in Sources */,

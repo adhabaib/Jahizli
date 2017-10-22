@@ -149,6 +149,8 @@ extension AppDelegate : MessagingDelegate {
         print("Firebase registration token: \(fcmToken)")
     }
     // [END refresh_token]
+    
+    
     // [START ios_10_data_message]
     // Receive data messages on iOS 10+ directly from FCM (bypassing APNs) when the app is in the foreground.
     // To enable direct data messages, you can set Messaging.messaging().shouldEstablishDirectChannel to true.

@@ -253,7 +253,7 @@ class FKSupplier: NSData {
     func uploadSupplierToFirebaseDB(){
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let supplierRef = ref.child("FKSupplier").childByAutoId()
+        let supplierRef = ref.child("FKSuppliers").childByAutoId()
         self.id = supplierRef.key
         self.path = "FKSuppliers/\(self.id)/"
         
@@ -299,7 +299,7 @@ class FKSupplier: NSData {
     func observeFetchSupplierFromFirebaseDB(){
         
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKSupplier").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -364,7 +364,7 @@ class FKSupplier: NSData {
     func observeSingleFetchSupplierFromFirebaseDB(){
         
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKSupplier").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        let ref = Database.database().reference().child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -427,7 +427,7 @@ class FKSupplier: NSData {
     func updateSupplierToFirebaseDB(){
         
         print_action(string: "FKSupplier: Supplier updating...")
-        let ref  = Database.database().reference().child("FKSupplier").child(self.id)
+        let ref  = Database.database().reference().child("FKSuppliers").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
@@ -467,7 +467,7 @@ class FKSupplier: NSData {
         self.removeDisplayImageFromFirebaseStorage()
         
         // Remove Supplier Data from Firebase Real-time Storage
-        Database.database().reference().child("FKSupplier").child(self.id).removeValue()
+        Database.database().reference().child("FKSuppliers").child(self.id).removeValue()
 
     }
     

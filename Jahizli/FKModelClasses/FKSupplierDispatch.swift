@@ -95,7 +95,7 @@ class FKSupplierDispatch : NSObject {
     // (D) Update Supplier Status
     func updateSupplierStatus(status: String){
         print_action(string: "FKSupplierDispatch: SUPPLIER STATUS updating...")
-        let ref  = Database.database().reference().child("FKSupplier").child(self.supplierID).child("status")
+        let ref  = Database.database().reference().child("FKSuppliers").child(self.supplierID).child("status")
         
         ref.updateChildValues([
             "status" : status

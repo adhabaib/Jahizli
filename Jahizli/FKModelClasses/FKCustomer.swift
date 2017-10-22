@@ -10,13 +10,14 @@ import Foundation
 import Firebase
 
 // FKCustomer Class
-class FKCustomer: NSObject {
+class FKCustomer: NSObject, MessagingDelegate {
     
     //MARK: public variables
     var verificationId: String = ""
     var phoneNumber: String = ""
     var loggedIn: Bool = false
     var fcmToken: String = ""
+    var incomplete_orders = [FKOrder]()
 
     //MARK: Firebase Authentication functions
     
@@ -94,6 +95,19 @@ class FKCustomer: NSObject {
     func getFCKToken(){
         self.fcmToken = Messaging.messaging().fcmToken!
         print("FKCustomer: FCM token: \(self.fcmToken ?? "")")
+    }
+    
+    
+    //:MARK: Update pending orders with new FCM Token
+    func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
+        print("FKCustomer: Firebase registration token: \(fcmToken)")
+        self.fcmToken = fcmToken
+        
+        for order in self.incomplete_orders {
+            order.customerFCMToken = self.fcmToken
+            order.updateIncompleteOrderToFireBaseDB()
+        }
+        
     }
         
 

@@ -45,8 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
         
         // [END register_for_notifications]
-
-        
+        application.applicationIconBadgeNumber = 0
+      
         return true
     }
 
@@ -66,6 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

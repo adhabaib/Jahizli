@@ -14,6 +14,7 @@ class FKSupplier: NSData {
     
     //MARK:  public variables
     var id : String = ""
+    var dispatchID: String = ""
     
     var name_en : String = ""
     var info_en : String = ""
@@ -27,6 +28,7 @@ class FKSupplier: NSData {
     var creditRate: Double = 0.0
     var category: String = ""
     var country: String = ""
+    
     
     var menu: FKMenu!
     
@@ -45,7 +47,7 @@ class FKSupplier: NSData {
     
     
     //MARK:  Initiliazer
-    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String], country: String, category: String){
+    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String], country: String, category: String, dispatchID: String){
         
         // Setup basic variables
         self.name_en = name_en
@@ -61,6 +63,7 @@ class FKSupplier: NSData {
         self.displayImage = displayImage
         self.category = category
         self.country = country
+        self.dispatchID = dispatchID
         
         // Setup Menu
         self.menu = FKMenu()
@@ -274,7 +277,8 @@ class FKSupplier: NSData {
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
-            "category" : self.category
+            "category" : self.category,
+            "dispatchID" : self.dispatchID
         ]
         
         // Save Object to Real-time Database
@@ -335,7 +339,9 @@ class FKSupplier: NSData {
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
                 self.country = supplierData!["country"] as! String
                 self.category = supplierData!["category"] as! String
-       
+                self.dispatchID = supplierData!["dispatchID"] as! String
+                
+                
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
                 self.menu.path = self.path
@@ -401,7 +407,9 @@ class FKSupplier: NSData {
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
                 self.country = supplierData!["country"] as! String
                 self.category = supplierData!["category"] as! String
-        
+                self.dispatchID = supplierData!["dispatchID"] as! String
+                
+                
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
                 self.menu.path = self.path
@@ -442,7 +450,8 @@ class FKSupplier: NSData {
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
-            "category" : self.category
+            "category" : self.category,
+            "dispatchID" : self.dispatchID
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -454,7 +463,7 @@ class FKSupplier: NSData {
         
         
     }
-
+    
     
     // (E) Delete Remove Suppler Data -> Menu Data -> Menu Items
     func removeSupplierFromFireBaseDB(){
@@ -468,7 +477,7 @@ class FKSupplier: NSData {
         
         // Remove Supplier Data from Firebase Real-time Storage
         Database.database().reference().child("FKSuppliers").child(self.id).removeValue()
-
+        
     }
     
     
@@ -476,7 +485,7 @@ class FKSupplier: NSData {
     //MARK:  Helper Methods
     
     func print_supplier_data(){
-          print("\n**************************************************** FKMSupplier Log ****************************************************")
+        print("\n**************************************************** FKMSupplier Log ****************************************************")
         
         let supplier = [
             "id" : self.id,
@@ -491,7 +500,8 @@ class FKSupplier: NSData {
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
-            "category" : self.category
+            "category" : self.category,
+            "dispatchID" : self.dispatchID
         ]
         
         print(supplier)
@@ -510,3 +520,4 @@ class FKSupplier: NSData {
     
     
 }
+

@@ -154,7 +154,9 @@ class ViewController: UIViewController {
         order = FKOrder()
         
         
-        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy", customerFCMToken: self.user.fcmToken)
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: self.user.phoneNumber, supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy", customerFCMToken: self.user.fcmToken)
+        
+        
         order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
         
         item.itemName_en = "Shwarma"

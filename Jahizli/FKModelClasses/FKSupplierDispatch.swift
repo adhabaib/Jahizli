@@ -243,8 +243,9 @@ class FKSupplierDispatch : NSObject {
         let json: [String: Any] =
             [
                 "notification" :
-                    [ "title": "Jahezli",
-                      "text": message]
+                    [ "title": "Jahizli",
+                      "text": message,
+                      "sound": "default"]
                 ,
                 
                 "project_id": "jahizli-918ae",
@@ -392,3 +393,4 @@ class FKSupplierDispatch : NSObject {
     
     
 }
+

@@ -68,6 +68,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Messaging
   - Firebase/Storage
+  - FirebaseInstanceID (= 2.0.4)
 
 SPEC CHECKSUMS:
   Firebase: 83283761a1ef6dc9846e03d08059f51421afbd65
@@ -84,6 +85,6 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 03eef2ee0b674770735cf79d9c4d3659cf6908e8
 
-PODFILE CHECKSUM: e5a3d649160d79b1270f34644e8001f2a202acb6
+PODFILE CHECKSUM: 3cf4fa62d704459373eb79b6d4381891b078afde
 
 COCOAPODS: 1.2.0

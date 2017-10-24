@@ -94,7 +94,7 @@ class FKCustomer: NSObject, MessagingDelegate {
     // (E) Get FCM Token
     func getFCKToken(){
         self.fcmToken = Messaging.messaging().fcmToken!
-        print("FKCustomer: FCM token: \(self.fcmToken ?? "")")
+        print("FKCustomer: FCM token: \(self.fcmToken)")
     }
     
     

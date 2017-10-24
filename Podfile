@@ -11,6 +11,7 @@ pod ‘Firebase/Database’
 pod ‘Firebase/Storage’
 pod ‘Firebase/Auth’
 pod ‘Firebase/Messaging’
+pod ‘FirebaseInstanceID’, ‘2.0.4’
 
 
   target 'JahizliTests' do

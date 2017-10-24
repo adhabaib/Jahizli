@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Debug: Proceed to testing... now!")
+        print("Debug: Proceed to testing.)
        
         user = FKCustomer()
         user.isUserSignedIn()

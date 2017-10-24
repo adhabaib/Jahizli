@@ -18,7 +18,11 @@ class ViewController: UIViewController {
     var order: FKOrder!
     var user: FKCustomer!
     let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
+    let NOTIFICATION_ORDER_ACCEPTED = "AppDelegate_FKOrder_Accepted"
+    let NOTIFICATION_ORDER_READY = "AppDelegate_FKOrder_Ready"
+    let NOTIFICATION_ORDER_COMPLETED = "AppDelegate_FKOrder_Completed"
     
+    @IBOutlet weak var orderStatusLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +32,9 @@ class ViewController: UIViewController {
         user.isUserSignedIn()
         
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestAccepted), name: Notification.Name(self.NOTIFICATION_ORDER_ACCEPTED ), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestReady), name: Notification.Name(self.NOTIFICATION_ORDER_READY ), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestComplete), name: Notification.Name(self.NOTIFICATION_ORDER_COMPLETED), object: nil)
         
         
        /*
@@ -148,9 +155,20 @@ class ViewController: UIViewController {
     }
     
     // Helper Functions
-    @objc func handleRequest(){
+    @objc func handleRequestAccepted(){
       
+        self.orderStatusLabel.text = "Your order has been accepted"
 
+    }
+    
+    @objc func handleRequestReady(){
+        self.orderStatusLabel.text = "Your order is ready for pickup"
+        
+    }
+    
+    @objc func handleRequestComplete(){
+        self.orderStatusLabel.text = "You picked up the order, Awesome"
+        
     }
     @IBAction func triggerEvent(_ sender: Any) {
         

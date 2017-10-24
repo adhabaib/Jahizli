@@ -16,6 +16,10 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    let NOTIFICATION_ORDER_ACCEPTED = "AppDelegate_FKOrder_Accepted"
+    let NOTIFICATION_ORDER_READY = "AppDelegate_FKOrder_Ready"
+    let NOTIFICATION_ORDER_COMPLETED = "AppDelegate_FKOrder_Completed"
+   
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -136,11 +140,65 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        // Print message ID.
-        print("Message ID: \(userInfo["gcm.message_id"]!)")
         
-        // Print full message.
-        print("%@", userInfo)
+        
+        // Decode Notification and Send Appropriate Local Notification
+        var body = ""
+        guard let aps = userInfo["aps"] as? [String : AnyObject] else {
+            print("Error parsing aps")
+            return
+        }
+        if let alert = aps["alert"] as? String {
+            body = alert
+        } else if let alert = aps["alert"] as? [String : String] {
+            body = alert["body"]!
+        }
+        
+        /*
+
+         ********************* AppDelegate Notification *******************************
+         (1) AppDelegate: Your order has been ACCEPTED and being made!
+         ******************************************************************************
+         ********************* AppDelegate Notification *******************************
+         (2) AppDelegate: Your order is READY for pickup!
+         ******************************************************************************
+         ********************* AppDelegate Notification *******************************
+         (3) AppDelegate: Thank you for using Jahizli, hope we did well!
+         ******************************************************************************
+         
+         */
+
+        
+        if(body == "Your order has been ACCEPTED and being made!"){
+            // POST NOTIFICATION FOR COMPLETION
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_ORDER_ACCEPTED), object: nil)
+            }
+        }
+        else if( body == "Your order is READY for pickup!"){
+            // POST NOTIFICATION FOR COMPLETION
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_ORDER_READY), object: nil)
+            }
+        }
+        else if (body == "Thank you for using Jahizli, hope we did well!"){
+            // POST NOTIFICATION FOR COMPLETION
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_ORDER_COMPLETED), object: nil)
+            }
+        }
+        
+        
+        
+        
+        
+        print("********************* AppDelegate Notification *******************************")
+        print("AppDelegate: \(body)")
+        print("******************************************************************************")
+        
+        
+        
+
         
     }
     

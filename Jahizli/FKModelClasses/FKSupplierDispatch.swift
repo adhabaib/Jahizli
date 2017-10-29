@@ -17,6 +17,7 @@ class FKSupplierDispatch : NSObject {
     //MARK:  public variables
     var id : String = ""
     var supplierID: String = ""
+    var country: String = ""
     
     var incompletedOrders = [FKOrder]()
     var completedOrders = [FKOrder]()
@@ -32,8 +33,9 @@ class FKSupplierDispatch : NSObject {
     let NOTIFICATION_OBSERVE_ORDERS_EMPTY = "FKSupplier_Fetch_Orders_Empty"
     
     //MARK:  Initializer Method
-    func setupSupplierDisptach(supplierID: String){
+    func setupSupplierDisptach(supplierID: String, country: String){
         self.supplierID = supplierID
+        self.country = country
         self.uploadSupplierDispatchToFireBaseDB()
     }
     
@@ -44,13 +46,14 @@ class FKSupplierDispatch : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let dispatchRef = ref.child("FKSupplierDispatches").childByAutoId()
+        let dispatchRef = ref.child(self.country).child("FKSupplierDispatches").childByAutoId()
         self.id = dispatchRef.key
         
         // Setup JSON Object
         let dispatch = [
             "id" : self.id,
-            "supplierID" : self.supplierID
+            "supplierID" : self.supplierID,
+            "country" : self.country
         ]
         
         // Save Object to Real-time Database
@@ -69,17 +72,18 @@ class FKSupplierDispatch : NSObject {
     
     // (B) Remove Supplier Dispatch From Firebase
     func removeSupplierDispatchFromFireBaseDB(){
-        Database.database().reference().child("FKSupplierDispatches").child(self.id).removeValue()
+        Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.id).removeValue()
     }
     
     // (C) Update Supplier Dispatch To Firebase
     func updateSupplierDispatchToFireBaseDB(){
         print_action(string: "FKSupplierDispatch: dispatch updating...")
-        let ref  = Database.database().reference().child("FKSupplierDispatches").child(self.id)
+        let ref  = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
-            "supplierID" : self.supplierID
+            "supplierID" : self.supplierID,
+            "country" : self.country
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -95,7 +99,7 @@ class FKSupplierDispatch : NSObject {
     // (D) Update Supplier Status
     func updateSupplierStatus(status: String){
         print_action(string: "FKSupplierDispatch: SUPPLIER STATUS updating...")
-        let ref  = Database.database().reference().child("FKSuppliers").child(self.supplierID).child("status")
+        let ref  = Database.database().reference().child(self.country).child("FKSuppliers").child(self.supplierID).child("status")
         
         ref.updateChildValues([
             "status" : status
@@ -109,13 +113,19 @@ class FKSupplierDispatch : NSObject {
         })
     }
     
+    
+    /*
+     
+     */
+    
+    
     //(E) Observe/ Fetch All Pending Orders From Firebase
     func observeFetchAllPendingOrdersFromFireBaseDB(){
         
         var old_count = 0
         
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKSupplierDispatches").child(self.id).child("FKOrdersWaiting")
+        let ref = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.id).child("FKOrdersWaiting")
         ref.observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -169,6 +179,9 @@ class FKSupplierDispatch : NSObject {
                         else if(grandchild.key == "customerFCMToken"){
                             order.customerFCMToken = grandchild.value as! String
                         }
+                        else if(grandchild.key == "country"){
+                            order.country = grandchild.value as! String
+                        }
                         else if(grandchild.key == "FKOrderItems"){
                             
                             for data in grandchild.children.allObjects as! [DataSnapshot] {
@@ -189,6 +202,7 @@ class FKSupplierDispatch : NSObject {
                                 orderItem.itemPrice = Double(orderItemData!["itemPrice"] as! String)!
                                 orderItem.instructions = orderItemData!["instructions"] as! String
                                 orderItem.quantity = Int(orderItemData!["quantity"] as! String)!
+                                orderItem.country = orderItemData!["country"] as! String
                                 orderItem.dispatchID = self.id
                                 orderItem.orderID = order.id
                                 
@@ -231,6 +245,9 @@ class FKSupplierDispatch : NSObject {
     
     //(A) HTTP POST TO FIREBASE SERVER
     func sendFireBaseNotification(deviceToken: String, message: String){
+        
+        print("FKSupplierDispatch: Token recieved \(deviceToken)")
+        
         let url = URL(string: "https://fcm.googleapis.com/fcm/send")!
         
         var request = URLRequest(url: url)
@@ -240,16 +257,15 @@ class FKSupplierDispatch : NSObject {
         request.httpMethod = "POST"
         
         // prepare json data
-        let json: [String: Any] =
-            [
-                "notification" :
-                    [ "title": "Jahizli",
-                      "text": message,
-                      "sound": "default"]
-                ,
-                
-                "project_id": "jahizli-918ae",
-                "to": deviceToken
+        let json: [String: Any] = [
+            
+            "to" : deviceToken,
+            "priority": "high",
+            "notification" :
+                [ "title": "Jahezli",
+                  "body": message,
+                  "sound": "default"]
+            
         ]
         
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
@@ -393,4 +409,3 @@ class FKSupplierDispatch : NSObject {
     
     
 }
-

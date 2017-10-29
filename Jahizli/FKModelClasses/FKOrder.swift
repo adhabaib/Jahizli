@@ -22,6 +22,7 @@ class FKOrder : NSObject {
     var supplierID: String = ""
     var dispatchID: String = ""
     var customerFCMToken: String = ""
+    var country: String = ""
     
     
     var orderItems = [FKOrderItem]()
@@ -36,7 +37,7 @@ class FKOrder : NSObject {
     
     
     //MARK: Initializer Method
-    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String, customerFCMToken: String){
+    func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String, customerFCMToken: String, country: String){
         
         self.orderDateTime = self.dateTimeToString(date: orderDateTime)
         self.orderStage = orderStage
@@ -45,6 +46,7 @@ class FKOrder : NSObject {
         self.supplierID = supplierID
         self.dispatchID = dispatchID
         self.customerFCMToken = customerFCMToken
+        self.country = country
         
     }
     
@@ -54,7 +56,7 @@ class FKOrder : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderRef = ref.child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").childByAutoId()
+        let orderRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").childByAutoId()
         self.id = orderRef.key
     
 
@@ -68,7 +70,8 @@ class FKOrder : NSObject {
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
             "dispatchID" : self.dispatchID,
-            "customerFCMToken" : self.customerFCMToken
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
         ]
         
         // Save Object to Real-time Database
@@ -97,12 +100,12 @@ class FKOrder : NSObject {
         // Remove Order From Waiting List
         
         // Remove Waiting order From Firebase -> Removes All order items
-    Database.database().reference().child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
+    Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
         
 
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderRef = ref.child("FKOrdersCompleted").childByAutoId()
+        let orderRef = ref.child(self.country).child("FKOrdersCompleted").childByAutoId()
         self.id = orderRef.key
         
         
@@ -116,7 +119,8 @@ class FKOrder : NSObject {
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
             "dispatchID" : self.dispatchID,
-            "customerFCMToken" : self.customerFCMToken
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
         ]
         
         // Save Object to Real-time Database
@@ -162,7 +166,7 @@ class FKOrder : NSObject {
     func updateIncompleteOrderToFireBaseDB(){
        
         print_action(string: "FKOrder: Order updating...")
-        let ref  = Database.database().reference().child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id)
+        let ref  = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
@@ -173,7 +177,8 @@ class FKOrder : NSObject {
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
             "dispatchID" : self.dispatchID,
-            "customerFCMToken" : self.customerFCMToken
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -191,7 +196,7 @@ class FKOrder : NSObject {
     func addOrderItemToOrder(item: FKMenuItem, quantity: Int, instructions: String){
         let orderItem = FKOrderItem()
         
-        orderItem.setupOrderItem(itemName_en: item.itemName_en, itemName_ar: item.itemName_ar, itemPrice: item.itemPrice, quantity: quantity, instructions: instructions, dispatchID:  self.dispatchID, orderID: self.id)
+        orderItem.setupOrderItem(itemName_en: item.itemName_en, itemName_ar: item.itemName_ar, itemPrice: item.itemPrice, quantity: quantity, instructions: instructions, dispatchID:  self.dispatchID, orderID: self.id, country: self.country)
        
         self.orderItems.append(orderItem)
     }
@@ -257,7 +262,8 @@ class FKOrder : NSObject {
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
             "dispatchID" : self.dispatchID,
-            "customerFCMToken" : self.customerFCMToken
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
             ]
         
         print(order)
@@ -278,7 +284,8 @@ class FKOrder : NSObject {
             "customerPhoneNumber" : self.customerPhoneNumber,
             "supplierID" : self.supplierID,
             "dispatchID" : self.dispatchID,
-            "customerFCMToken" : self.customerFCMToken
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
         ]
         print(order)
         
@@ -291,7 +298,8 @@ class FKOrder : NSObject {
                 "quantity" : String(orderItem.quantity),
                 "instructions" : orderItem.instructions,
                 "orderID" : orderItem.orderID,
-                "dispatchID": orderItem.dispatchID
+                "dispatchID": orderItem.dispatchID,
+                "country" : orderItem.country
             ]
             print("\n\(item)")
         }

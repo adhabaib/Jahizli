@@ -67,7 +67,7 @@ class FKSupplier: NSData {
         
         // Setup Menu
         self.menu = FKMenu()
-        self.menu.setupMenu(categories_en: categories_en, categories_ar: categories_ar)
+        self.menu.setupMenu(categories_en: categories_en, categories_ar: categories_ar, country: self.country)
         
         // UploadData to Firebase Realtime Database
         self.uploadSupplierToFirebaseDB()
@@ -256,7 +256,7 @@ class FKSupplier: NSData {
     func uploadSupplierToFirebaseDB(){
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let supplierRef = ref.child("FKSuppliers").childByAutoId()
+        let supplierRef = ref.child(self.country).child("FKSuppliers").childByAutoId()
         self.id = supplierRef.key
         self.path = "FKSuppliers/\(self.id)/"
         
@@ -303,7 +303,7 @@ class FKSupplier: NSData {
     func observeFetchSupplierFromFirebaseDB(){
         
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child(self.country).child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id).observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -370,7 +370,7 @@ class FKSupplier: NSData {
     func observeSingleFetchSupplierFromFirebaseDB(){
         
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        let ref = Database.database().reference().child(self.country).child("FKSuppliers").queryOrdered(byChild:"id").queryEqual(toValue: id)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -435,7 +435,7 @@ class FKSupplier: NSData {
     func updateSupplierToFirebaseDB(){
         
         print_action(string: "FKSupplier: Supplier updating...")
-        let ref  = Database.database().reference().child("FKSuppliers").child(self.id)
+        let ref  = Database.database().reference().child(self.country).child("FKSuppliers").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
@@ -520,4 +520,3 @@ class FKSupplier: NSData {
     
     
 }
-

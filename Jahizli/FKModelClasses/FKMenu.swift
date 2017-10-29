@@ -17,6 +17,9 @@ class FKMenu: NSObject {
     var id: String = "?"
     var menuCategories_en = [String]()
     var menuCategories_ar = [String]()
+    var country: String = "?"
+    
+    
     var menuItems = [FKMenuItem]()
     var path = ""
     
@@ -28,7 +31,7 @@ class FKMenu: NSObject {
     let NOTIFICATION_FETCHED_ITEMS = "FKMenu_Fetched_Items"
     
     //MARK:  Setup Object Function
-    func setupMenu(categories_en: [String], categories_ar : [String]){
+    func setupMenu(categories_en: [String], categories_ar : [String] , country: String){
 
         // Setup categories
         for category in categories_en{
@@ -39,6 +42,8 @@ class FKMenu: NSObject {
         for category in categories_ar{
             self.menuCategories_ar.append(category)
         }
+        
+        self.country = country
         
         self.uploadMenuToFirebaseDB()
         
@@ -52,14 +57,15 @@ class FKMenu: NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let menuRef = ref.child("FKMenus").childByAutoId()
+        let menuRef = ref.child(self.country).child("FKMenus").childByAutoId()
         self.id = menuRef.key
         
         // Setup JSON Object
         let menu = [
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
+            "country" : self.country
             ]
         
         // Save Object to Real-time Database
@@ -80,7 +86,7 @@ class FKMenu: NSObject {
     func observeFetchMenuFromFirebaseDB(){
 
         // Call Observe on Reference
-        _ = Database.database().reference().child("FKMenus").child(self.id).observe(DataEventType.value, with: { (snapshot) in
+        _ = Database.database().reference().child(self.country).child("FKMenus").child(self.id).observe(DataEventType.value, with: { (snapshot) in
             
             // Get Data From Real-time Database
             let postDict = snapshot.value as? NSDictionary
@@ -119,9 +125,10 @@ class FKMenu: NSObject {
                             item.itemPrice = Double(itemData!["itemPrice"] as! String)!
                             item.itemCategory = itemData!["itemCategory"] as! String
                             item.menuID = itemData!["menuID"] as! String
+                            item.menuID = itemData!["country"] as! String
                             item.path = self.path
                             item.fetchImageFromFirebaseStorage()
-                            
+                          
                             self.menuItems.append(item)
                             
                             self.print_action(string: "**** FKMenu: item Object Initialized****")
@@ -137,6 +144,10 @@ class FKMenu: NSObject {
                     else if(child.key == "menuCategories_ar"){
                         self.menuCategories_ar = self.stringToArray(string: child.value as! String)
                     }
+                    else if(child.key == "country"){
+                        self.country = child.value as! String
+                    }
+                    
                     
                 }
                 
@@ -162,7 +173,7 @@ class FKMenu: NSObject {
     //*(C) Single Fetch FKMenu From Real-time Database
     func observeSingleFetchMenuFromFirebaseDB(){
         // Call Observe on Reference
-        let ref = Database.database().reference().child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id)
+        let ref = Database.database().reference().child(self.country).child("FKMenus").queryOrdered(byChild:"id").queryEqual(toValue: id)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             // Get Data From Real-time Database
@@ -202,6 +213,7 @@ class FKMenu: NSObject {
                             item.itemPrice = Double(itemData!["itemPrice"] as! String)!
                             item.itemCategory = itemData!["itemCategory"] as! String
                             item.menuID = itemData!["menuID"] as! String
+                            item.menuID = itemData!["country"] as! String
                             item.path = self.path
                             item.fetchImageFromFirebaseStorage()
                             
@@ -219,6 +231,9 @@ class FKMenu: NSObject {
                     }
                     else if(child.key == "menuCategories_ar"){
                         self.menuCategories_ar = self.stringToArray(string: child.value as! String)
+                    }
+                    else if(child.key == "country"){
+                        self.country = child.value as! String
                     }
                     
                 }
@@ -242,12 +257,13 @@ class FKMenu: NSObject {
     func updateMenuToFirebaseDB(){
         
         print_action(string: "FKMenu: Item updating...")
-        let ref  = Database.database().reference().child("FKMenus").child(self.id)
+        let ref  = Database.database().reference().child(self.country).child("FKMenus").child(self.id)
         
         ref.updateChildValues([
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
+            "country" : self.country
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -354,7 +370,7 @@ class FKMenu: NSObject {
         self.menuItems.removeAll()
         
         // Remove Menu Data From Firebase -> Removes All FKMenuItems
-        Database.database().reference().child("FKMenus").child(self.id).removeValue()
+        Database.database().reference().child(self.country).child("FKMenus").child(self.id).removeValue()
         
     }
     
@@ -366,7 +382,7 @@ class FKMenu: NSObject {
         
         let item = FKMenuItem()
         
-        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path, menuID: self.id)
+        item.setupItem(itemName_en: itemName_en, itemName_ar: itemName_ar, itemInfo_en: itemInfo_en, itemInfo_ar: itemInfo_ar, itemImage: itemImage, itemPrice: itemPrice, itemCategory: itemCategory, path: path, menuID: self.id, country: self.country)
         
         self.menuItems.append(item)
         
@@ -401,7 +417,8 @@ class FKMenu: NSObject {
         let menu = [
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
+            "country" : self.country
         ]
         print(menu)
          print("*******************************************************************\n")
@@ -416,7 +433,8 @@ class FKMenu: NSObject {
         let menu = [
             "id" : self.id,
             "menuCategories_en" : self.arrayToString(array: menuCategories_en),
-            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar)
+            "menuCategories_ar" : self.arrayToString(array: menuCategories_ar),
+            "country" : self.country
         ]
         print(menu)
         

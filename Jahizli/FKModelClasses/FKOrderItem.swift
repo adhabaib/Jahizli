@@ -21,6 +21,7 @@ class FKOrderItem : NSObject {
     var orderID: String = ""
     var dispatchID: String = ""
     var instructions: String = ""
+    var country : String = ""
 
     
     
@@ -29,7 +30,7 @@ class FKOrderItem : NSObject {
     let NOTIFICATION_UPLOAD = "FKOrderItem_Uploaded"
     
     //MARK:  Initializer Method
-    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String, dispatchID: String, orderID: String){
+    func setupOrderItem(itemName_en: String, itemName_ar: String, itemPrice: Double,quantity: Int, instructions: String, dispatchID: String, orderID: String, country: String){
         self.itemName_en = itemName_en
         self.itemName_ar = itemName_ar
         self.itemPrice = itemPrice
@@ -37,6 +38,7 @@ class FKOrderItem : NSObject {
         self.instructions = instructions
         self.orderID = orderID
         self.dispatchID = dispatchID
+        self.country = country
       
         
     }
@@ -47,7 +49,7 @@ class FKOrderItem : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderItemRef = ref.child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.orderID).child("FKOrderItems").childByAutoId()
+        let orderItemRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.orderID).child("FKOrderItems").childByAutoId()
         self.id = orderItemRef.key
         
         // Setup JSON Object
@@ -59,7 +61,8 @@ class FKOrderItem : NSObject {
             "quantity" : String(self.quantity),
             "instructions" : self.instructions,
             "orderID" : self.orderID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "country" : self.country
         ]
         
         // Save Object to Real-time Database
@@ -82,7 +85,7 @@ class FKOrderItem : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderItemRef = ref.child("FKOrdersCompleted").child(self.orderID).child("FKOrderItems").childByAutoId()
+        let orderItemRef = ref.child(self.country).child("FKOrdersCompleted").child(self.orderID).child("FKOrderItems").childByAutoId()
         self.id = orderItemRef.key
         
         // Setup JSON Object
@@ -94,7 +97,8 @@ class FKOrderItem : NSObject {
             "quantity" : String(self.quantity),
             "instructions" : self.instructions,
             "orderID" : self.orderID,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "country" : self.country
         ]
         
         // Save Object to Real-time Database

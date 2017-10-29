@@ -36,8 +36,8 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestReady), name: Notification.Name(self.NOTIFICATION_ORDER_READY ), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestComplete), name: Notification.Name(self.NOTIFICATION_ORDER_COMPLETED), object: nil)
         
-        
-       /*
+        /*
+      
         let supplier = FKSupplier()
         let logo = UIImage(named: "logo")
         let display = UIImage(named: "displayImage")
@@ -52,50 +52,15 @@ class ViewController: UIViewController {
         supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
         supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
         
-       
+       */
+        
+       // let dispatch = FKSupplierDispatch()
+        //dispatch.setupSupplierDisptach(supplierID:"-KxdDOYi80cZsbIwJhHK", country: "Kuwait")
         
         
-         //
-        let dispatch = FKSupplierDispatch()
-        dispatch.setupSupplierDisptach(supplierID:"-KwfHDulDICJPIFpfypA")
-    
-       
-        let now = Date()
-        let club = UIImage(named: "club")
-        let item = FKMenuItem()
-        item.itemName_en = "Kabab"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "Yummy!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 2.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-    
-        order = FKOrder()
-        order.setupOrder(orderDateTime: now, orderStage: "Pending", orderPaymentMethod: "KNET", customerPhoneNumber: "99166300", supplierID: "-KwfHDulDICJPIFpfypA", dispatchID: "-KwfnNinXARGkU2sewDy")
-        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Pleae make sure its hot and spicey!")
-        order.uploadNewOrderToFirebaseDB()
- 
- 
 
-        
-        let dispatch = FKSupplierDispatch()
-        dispatch.id = "-KwfnNinXARGkU2sewDy"
-        dispatch.supplierID = "-KwfHDulDICJPIFpfypA"
-        
-        dispatch.observeFetchAllPendingOrdersFromFireBaseDB()
-        
-        
-        
-        self.order = FKOrder()
-        self.order.id = "-KwanPBEqoRm3nTR4yiM"
-        order.observeFetchOrderFromFirebaseDB()
-        
-         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequest), name: Notification.Name(self.order.NOTIFICATION_FETCHED_ITEMS), object: nil)
  
-         */
+        
         
         
         
@@ -190,7 +155,7 @@ class ViewController: UIViewController {
         order = FKOrder()
         
         
-        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: self.user.phoneNumber, supplierID: "-Kx8bvMsEB6eNhId9Bfz", dispatchID: "-KwfnNinXARGkU2sewDy", customerFCMToken: self.user.fcmToken)
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: self.user.phoneNumber, supplierID: "-KxdDOYi80cZsbIwJhHK", dispatchID: "-KxdDnXd98W3NKAmGAl4", customerFCMToken: self.user.fcmToken, country: "Kuwait")
         
         
         order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")

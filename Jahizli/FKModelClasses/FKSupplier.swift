@@ -346,6 +346,7 @@ class FKSupplier: NSData {
                 self.menu = FKMenu()
                 self.menu.path = self.path
                 self.menu.id = supplierData!["menu"] as! String
+                self.menu.country = self.country
                 self.menu.observeFetchMenuFromFirebaseDB()
                 
                 self.print_action(string: "**** FKSupplier: Supplier Object Initialized****")
@@ -414,6 +415,7 @@ class FKSupplier: NSData {
                 self.menu = FKMenu()
                 self.menu.path = self.path
                 self.menu.id = supplierData!["menu"] as! String
+                self.menu.country = self.country
                 self.menu.observeFetchMenuFromFirebaseDB()
                 
                 self.print_action(string: "**** FKSupplier: Supplier Object Initialized****")

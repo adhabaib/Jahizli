@@ -85,7 +85,7 @@ class FKOrderItem : NSObject {
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderItemRef = ref.child(self.country).child("FKOrdersCompleted").child(self.orderID).child("FKOrderItems").childByAutoId()
+        let orderItemRef = ref.child(self.country).child("FKOrdersCompleted").child(self.dispatchID).child(self.orderID).child("FKOrderItems").childByAutoId()
         self.id = orderItemRef.key
         
         // Setup JSON Object

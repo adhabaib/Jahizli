@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestReady), name: Notification.Name(self.NOTIFICATION_ORDER_READY ), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestComplete), name: Notification.Name(self.NOTIFICATION_ORDER_COMPLETED), object: nil)
         
-        /*
+        
       
         let supplier = FKSupplier()
         let logo = UIImage(named: "logo")
@@ -46,13 +46,23 @@ class ViewController: UIViewController {
         let cake = UIImage(named: "cake")
         let drink = UIImage(named: "water")
         
-        supplier.setupSupplier(name_en: "Grill Town", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"], country: "Kuwait", category: "Healthy", dispatchID: "-KwfnNinXARGkU2sewDy")
+
+        
+        supplier.setupSupplier(name_en: "Sushi Club", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"], country: "Kuwait", category: "Healthy", dispatchID: "-KwfnNinXARGkU2sewDy")
         
         supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
         supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
         supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
         
-       */
+        
+        supplier.setupSupplier(name_en: "Baqala", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"], country: "Kuwait", category: "Healthy", dispatchID: "-KwfnNinXARGkU2sewDy")
+        
+        supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
+        supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
+        supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
+   
+
+       
         
        // let dispatch = FKSupplierDispatch()
         //dispatch.setupSupplierDisptach(supplierID:"-KxdDOYi80cZsbIwJhHK", country: "Kuwait")

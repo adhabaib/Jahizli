@@ -105,7 +105,7 @@ class FKOrder : NSObject {
 
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderRef = ref.child(self.country).child("FKOrdersCompleted").childByAutoId()
+        let orderRef = ref.child(self.country).child("FKOrdersCompleted").child(self.dispatchID).childByAutoId()
         self.id = orderRef.key
         
         

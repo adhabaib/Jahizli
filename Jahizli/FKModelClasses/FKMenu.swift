@@ -102,6 +102,7 @@ class FKMenu: NSObject {
             }
             else{
                 
+                self.menuItems.removeAll()
                 
                 for child in snapshot.children.allObjects as! [DataSnapshot]  {
                 
@@ -125,8 +126,8 @@ class FKMenu: NSObject {
                             item.itemPrice = Double(itemData!["itemPrice"] as! String)!
                             item.itemCategory = itemData!["itemCategory"] as! String
                             item.menuID = itemData!["menuID"] as! String
-                            item.menuID = itemData!["country"] as! String
                             item.path = self.path
+                            item.country = self.country
                             item.fetchImageFromFirebaseStorage()
                           
                             self.menuItems.append(item)
@@ -298,6 +299,7 @@ class FKMenu: NSObject {
             if(c == old_category_ar){
                 self.menuCategories_ar.remove(at: ar_i)
                 self.menuCategories_ar.insert(new_category_ar, at: ar_i)
+                
             }
             ar_i = ar_i + 1
         }
@@ -313,8 +315,6 @@ class FKMenu: NSObject {
                 item.updateItemToFirebaseDB()
             }
         }
-        
-        
         
         
     }
@@ -344,6 +344,7 @@ class FKMenu: NSObject {
             ar_i = ar_i + 1
         }
         
+        self.updateMenuToFirebaseDB()
         
         // Remove all Unassigned MenuItems
         
@@ -458,7 +459,8 @@ class FKMenu: NSObject {
     
     
     func arrayToString(array: [String]) -> String{
-        return array.joined(separator:",")
+        let value = array.joined(separator:",")
+        return value
     }
     
     func stringToArray(string: String) -> [String]{

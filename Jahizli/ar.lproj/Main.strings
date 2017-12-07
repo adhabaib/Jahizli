@@ -1,0 +1,39 @@
+
+/* Class = "UIButton"; normalTitle = "Place Order"; ObjectID = "27O-El-jsV"; */
+"27O-El-jsV.normalTitle" = "Place Order";
+
+/* Class = "UILabel"; text = "favourites,"; ObjectID = "3pU-6Q-I6C"; */
+"3pU-6Q-I6C.text" = "favourites,";
+
+/* Class = "UILabel"; text = "Enter your phone number"; ObjectID = "Ana-Fe-kUg"; */
+"Ana-Fe-kUg.text" = "Enter your phone number";
+
+/* Class = "UILabel"; text = "Order Status"; ObjectID = "Btp-lh-l9Q"; */
+"Btp-lh-l9Q.text" = "Order Status";
+
+/* Class = "UIButton"; normalTitle = "LATER"; ObjectID = "Cuc-69-9PS"; */
+"Cuc-69-9PS.normalTitle" = "LATER";
+
+/* Class = "UILabel"; text = "prepared"; ObjectID = "Fkf-mM-I64"; */
+"Fkf-mM-I64.text" = "prepared";
+
+/* Class = "UILabel"; text = "Local"; ObjectID = "PmQ-cx-CBn"; */
+"PmQ-cx-CBn.text" = "Local";
+
+/* Class = "UILabel"; text = "faster"; ObjectID = "RgG-Au-cG9"; */
+"RgG-Au-cG9.text" = "faster";
+
+/* Class = "UIButton"; normalTitle = "Send Code"; ObjectID = "S4V-Vr-suI"; */
+"S4V-Vr-suI.normalTitle" = "Send Code";
+
+/* Class = "UIButton"; normalTitle = "REGISTER"; ObjectID = "SfZ-7S-TAP"; */
+"SfZ-7S-TAP.normalTitle" = "REGISTER";
+
+/* Class = "UINavigationItem"; title = "JAHIZLI"; ObjectID = "Uge-xk-FfI"; */
+"Uge-xk-FfI.title" = "JAHIZLI";
+
+/* Class = "UIButton"; normalTitle = "Authenticate"; ObjectID = "l4Y-v6-2iF"; */
+"l4Y-v6-2iF.normalTitle" = "Authenticate";
+
+/* Class = "UILabel"; text = "N/A"; ObjectID = "zG1-Gq-Y4g"; */
+"zG1-Gq-Y4g.text" = "N/A";

@@ -8,6 +8,8 @@
 
 import Foundation
 import Firebase
+import SDWebImage
+import FirebaseStorageUI
 
 //FKSupplier Class
 class FKSupplier: NSData {
@@ -24,10 +26,16 @@ class FKSupplier: NSData {
     var hours: String = ""
     var status: String = ""
     var phoneNumber: String = ""
-    var balance: Double = 0.0
+    var fixedRate: Double = 0.0
     var creditRate: Double = 0.0
     var category: String = ""
     var country: String = ""
+    var location:String = ""
+    
+    var long: String =  ""
+    var lat: String = ""
+    var area: String = ""
+   
     
     
     var menu: FKMenu!
@@ -39,6 +47,7 @@ class FKSupplier: NSData {
     
     // notification tags
     let NOTIFICATION_UPLOAD = "FKSupplier_Basic_Info_Uploaded"
+    let NOTIFICATION_IMG_UPLOAD_LOGO = "FKSupplier_Image_Uploaded_LOGO"
     let NOTIFICATION_IMG_UPLOAD = "FKSupplier_Image_Uploaded"
     let NOTIFICATION_FETCH = "FKSupplier_Basic_Info_Fetched"
     let NOTIFICATION_FETCH_EMPTY = "FKSupplier_Basic_Info_Fetched_Empty"
@@ -47,7 +56,7 @@ class FKSupplier: NSData {
     
     
     //MARK:  Initiliazer
-    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, balance: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String], country: String, category: String, dispatchID: String){
+    func setupSupplier(name_en: String, name_ar: String, status: String, hours: String, info_en : String, info_ar: String, phone_number: String, fixedRate: Double, creditRate: Double, logo: Data!, displayImage: Data!, categories_en : [String], categories_ar: [String], country: String, category: String, dispatchID: String, location: String, long: String, lat: String, area: String) {
         
         // Setup basic variables
         self.name_en = name_en
@@ -57,13 +66,18 @@ class FKSupplier: NSData {
         self.status  = status
         self.hours = hours
         self.phoneNumber = phone_number
-        self.balance = balance
+        self.fixedRate = fixedRate
         self.creditRate = creditRate
         self.logo = logo
         self.displayImage = displayImage
         self.category = category
         self.country = country
         self.dispatchID = dispatchID
+        self.location = location
+        self.long = long
+        self.lat = lat
+        self.area = area
+       
         
         // Setup Menu
         self.menu = FKMenu()
@@ -102,7 +116,8 @@ class FKSupplier: NSData {
             //self.print_action(string: "**** FKSupplier: Image upload progress -> \(snapshot.progress!.fractionCompleted) ****")
             if(snapshot.progress!.fractionCompleted == 1.0){
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD), object: nil)
+                    self.print_action(string: "**** FKSupplier: LOGO UPLOADED ****")
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_IMG_UPLOAD_LOGO), object: nil)
                 }
             }
             
@@ -175,6 +190,35 @@ class FKSupplier: NSData {
     }
     
     
+    //(X) Fetch Logo Image Into UIImageView
+    func fetchLogoImageFromFirebaseStorageTo(imageView: UIImageView, placeHolderImageName: String){
+        
+        // Get a reference to the storage service using the default Firebase App
+        let storage = Storage.storage()
+        
+        // Create a storage reference from our storage service
+        let storageRef = storage.reference()
+        
+        // Reference to an image file in Firebase Storage
+        let reference = storageRef.child("FKSuppliers/\(self.id)/Logo.jpeg")
+        
+        // UIImageView in your ViewController
+        let imageView: UIImageView = imageView
+        
+        // Placeholder image
+        let placeholderImage = UIImage(named: placeHolderImageName)
+        
+        // Load the image using SDWebImage
+        imageView.sd_setShowActivityIndicatorView(true)
+        imageView.sd_setIndicatorStyle(.gray)
+        imageView.sd_setImage(with: reference, placeholderImage: placeholderImage)
+        
+       
+     
+        
+    }
+        
+    
     // (D) Fetch Display Image From Firebase Storeage
     func fetchDisplayImageFromFirebaseStorage(){
         
@@ -220,7 +264,7 @@ class FKSupplier: NSData {
         
         // Delete the file
         logoRef.delete { error in
-            if let error = error {
+            if error != nil {
                 self.print_action(string: "**** FKSupplier: Logo Image could not be found/fetched!")
             } else {
                 self.print_action(string: "**** FKSupplier: Logo Image found/fetched and DELETED!")
@@ -242,7 +286,7 @@ class FKSupplier: NSData {
         
         // Delete the file
         displayRef.delete { error in
-            if let error = error {
+            if error != nil {
                 self.print_action(string: "**** FKSupplier: Display Image could not be found/fetched!")
             } else {
                 self.print_action(string: "**** FKSupplier: Display Image found/fetched and DELETED!")
@@ -273,12 +317,16 @@ class FKSupplier: NSData {
             "info_en" : self.info_en,
             "info_ar" : self.info_ar,
             "phoneNumber" : self.phoneNumber ,
-            "balance" : String(self.balance) ,
+            "fixedRate" : String(self.fixedRate) ,
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
             "category" : self.category,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "location" : self.location,
+            "long" : self.long,
+            "lat" : self.lat,
+            "area" : self.area
         ]
         
         // Save Object to Real-time Database
@@ -335,12 +383,17 @@ class FKSupplier: NSData {
                 self.status  =  supplierData!["status"] as! String
                 self.hours =  supplierData!["hours"] as! String
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
-                self.balance = Double(supplierData!["balance"] as! String)!
+                self.fixedRate = Double(supplierData!["fixedRate"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
                 self.country = supplierData!["country"] as! String
                 self.category = supplierData!["category"] as! String
                 self.dispatchID = supplierData!["dispatchID"] as! String
+                self.location = supplierData!["location"] as! String
+                self.long = supplierData!["long"] as! String
+                self.lat = supplierData!["lat"] as! String
+                self.area = supplierData!["area"] as! String
                 
+      
                 
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
@@ -404,12 +457,16 @@ class FKSupplier: NSData {
                 self.status  =  supplierData!["status"] as! String
                 self.hours =  supplierData!["hours"] as! String
                 self.phoneNumber =  supplierData!["phoneNumber"] as! String
-                self.balance = Double(supplierData!["balance"] as! String)!
+                self.fixedRate = Double(supplierData!["fixedRate"] as! String)!
                 self.creditRate =  Double(supplierData!["creditRate"] as! String)!
                 self.country = supplierData!["country"] as! String
                 self.category = supplierData!["category"] as! String
                 self.dispatchID = supplierData!["dispatchID"] as! String
-                
+                self.location = supplierData!["location"] as! String
+                self.long = supplierData!["long"] as! String
+                self.lat = supplierData!["lat"] as! String
+                self.area = supplierData!["area"] as! String
+ 
                 
                 self.path =  "FKSuppliers/\(self.id)/"
                 self.menu = FKMenu()
@@ -448,12 +505,19 @@ class FKSupplier: NSData {
             "info_en" : self.info_en,
             "info_ar" : self.info_ar,
             "phoneNumber" : self.phoneNumber ,
-            "balance" : String(self.balance) ,
+            "fixedRate" : String(self.fixedRate) ,
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
             "category" : self.category,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "location" : self.location,
+            "long" : self.long,
+            "lat" : self.lat,
+            "area" : self.area
+
+            
+        
             ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
                 
                 // POST NOTIFICATION FOR COMPLETION
@@ -478,7 +542,8 @@ class FKSupplier: NSData {
         self.removeDisplayImageFromFirebaseStorage()
         
         // Remove Supplier Data from Firebase Real-time Storage
-        Database.database().reference().child("FKSuppliers").child(self.id).removeValue()
+        Database.database().reference().child(self.country).child("FKSuppliers").child(self.id).removeValue()
+        Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).removeValue()
         
     }
     
@@ -498,12 +563,19 @@ class FKSupplier: NSData {
             "info_en" : self.info_en,
             "info_ar" : self.info_ar,
             "phoneNumber" : self.phoneNumber ,
-            "balance" : String(self.balance) ,
+            "fixedRate" : String(self.fixedRate) ,
             "creditRate" : String(self.creditRate),
             "menu" : self.menu.id,
             "country" : self.country,
             "category" : self.category,
-            "dispatchID" : self.dispatchID
+            "dispatchID" : self.dispatchID,
+            "location" : self.location,
+            "long" : self.long,
+            "lat" : self.lat,
+            "area" : self.area
+            
+        
+            
         ]
         
         print(supplier)

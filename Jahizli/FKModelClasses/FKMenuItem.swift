@@ -122,6 +122,33 @@ class FKMenuItem: NSObject {
            
         }
     }
+    
+    
+    //(X) Fetch Logo Image Into UIImageView
+    func fetchImageFromFirebaseStorageTo(imageView: UIImageView, placeHolderImageName: String){
+        
+        // Get a reference to the storage service using the default Firebase App
+        let storage = Storage.storage()
+        
+        // Create a storage reference from our storage service
+        let storageRef = storage.reference()
+        
+        // Create a reference to the file you want to download
+        let itemRef = storageRef.child("\(path)/FKMenuItems/\(id).jpeg")
+        
+        
+        // UIImageView in your ViewController
+        let imageView: UIImageView = imageView
+        
+        // Placeholder image
+        let placeholderImage = UIImage(named: placeHolderImageName)
+        
+        // Load the image using SDWebImage
+        imageView.sd_setShowActivityIndicatorView(true)
+        imageView.sd_setIndicatorStyle(.gray)
+        imageView.sd_setImage(with: itemRef, placeholderImage: placeholderImage)
+        
+    }
   
     
     //(C) *Remove/Delete Image from Firebase Storage
@@ -137,7 +164,7 @@ class FKMenuItem: NSObject {
         
         // Delete the file
         itemRef.delete { error in
-            if let error = error {
+            if error != nil {
                  self.print_action(string: "**** FKMenuItem: Item Image could not be found/fetched!")
             } else {
                 self.print_action(string: "**** FKMenuItem: Item Image found/fetched and DELETED!")

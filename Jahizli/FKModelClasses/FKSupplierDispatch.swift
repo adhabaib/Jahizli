@@ -22,6 +22,10 @@ class FKSupplierDispatch : NSObject {
     var incompletedOrders = [FKOrder]()
     var completedOrders = [FKOrder]()
     
+    var unprocessedOrders = [[FKOrder]]()
+    var unprocessedDates = [String]()
+    
+    
     var player: AVAudioPlayer?
     
     //MARK:  notification tags
@@ -29,6 +33,7 @@ class FKSupplierDispatch : NSObject {
     let NOTIFICATION_UPDATED = "FKSupplierDispatch_Updated"
     let NOTIFICATION_UPDATED_SUPPLIER = "FKSupplierDispatch_Updated_FKSupplier_Status"
     let NOTIFICATION_FETCHED_ORDERS = "FKSupplierDispatch_Fetched_In_Progress_Orders"
+    let NOTIFICATION_FETCHED_ORDERS_UNPROCESSED = "FKSupplierDispatch_Fetched_In_Progress_Orders_UNPROCESSED"
     let NOTIFICATION_UPDATED_ORDER = "FKSupplierDispatch_Updated_In_Progress_Orders"
     let NOTIFICATION_OBSERVE_ORDERS_EMPTY = "FKSupplier_Fetch_Orders_Empty"
     
@@ -113,10 +118,6 @@ class FKSupplierDispatch : NSObject {
         })
     }
     
-    
-    /*
-     
-     */
     
     
     //(E) Observe/ Fetch All Pending Orders From Firebase
@@ -241,6 +242,258 @@ class FKSupplierDispatch : NSObject {
     }
     
     
+    
+    //(E) Observe/ Fetch All Pending Orders From Firebase
+    func observeFetchAllUnProcessedOrdersFromFireBaseDB(){
+        
+        // Call Observe on Reference
+        let ref = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.id).child("FKOrdersUnProcessed")
+        ref.observe(DataEventType.value, with: { (snapshot) in
+            
+            // Get Data From Real-time Database
+            let postDict = snapshot.value as? NSDictionary
+            
+            // No Item Found Return Failed to Find
+            if(postDict == nil){
+                self.print_action(string: "**** FKSupplierDispatch: Orders were not found/empty. ****")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_ORDERS_EMPTY), object: nil)
+                }
+                
+            }
+            else{
+                
+                // Refresh Unprocessed Arrays
+                self.unprocessedDates.removeAll()
+                self.unprocessedOrders.removeAll()
+                
+                for child in snapshot.children.allObjects as! [DataSnapshot]  {
+                    
+                    // Get Date
+                    let current_date = child.key
+                    self.unprocessedDates.append(current_date)
+                    
+                    self.print_action(string: "Unprocessed Orders for date: \(current_date)")
+                    
+                    var current_orders = [FKOrder]()
+                    
+                    for grand in child.children.allObjects as! [DataSnapshot] {
+                        
+                        let order = FKOrder()
+                        
+                        for grandchild in grand.children.allObjects as! [DataSnapshot] {
+                            
+                            // Setup Order Object Fields
+                            if(grandchild.key == "id"){
+                                order.id = grandchild.value as! String
+                                order.dispatchID = self.id
+                            }
+                            else if(grandchild.key == "orderDateTime"){
+                                order.orderDateTime = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "orderStage"){
+                                order.orderStage = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "orderPaymentMethod"){
+                                order.orderPaymentMethod = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "orderTotalPrice"){
+                                order.orderTotalPrice = Double(grandchild.value as! String)!
+                            }
+                            else if(grandchild.key == "customerPhoneNumber"){
+                                order.customerPhoneNumber = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "supplierID"){
+                                order.supplierID = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "customerFCMToken"){
+                                order.customerFCMToken = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "country"){
+                                order.country = grandchild.value as! String
+                            }
+                            else if(grandchild.key == "FKOrderItems"){
+                                
+                                for data in grandchild.children.allObjects as! [DataSnapshot] {
+                                    
+                                    self.print_action(string: "**** FKSupplierDispatch: items sucessfully found! ****")
+                                    
+                                    // Create FKMenuItem
+                                    let orderItem = FKOrderItem()
+                                    
+                                    // Parse Data to new Item
+                                    let orderItemData = data.value as? NSDictionary
+                                    
+                                    // Init Order Item Object
+                                    
+                                    orderItem.id =  orderItemData!["id"] as! String
+                                    orderItem.itemName_en = orderItemData!["itemName_en"] as! String
+                                    orderItem.itemName_ar = orderItemData!["itemName_ar"] as! String
+                                    orderItem.itemPrice = Double(orderItemData!["itemPrice"] as! String)!
+                                    orderItem.instructions = orderItemData!["instructions"] as! String
+                                    orderItem.quantity = Int(orderItemData!["quantity"] as! String)!
+                                    orderItem.country = orderItemData!["country"] as! String
+                                    orderItem.dispatchID = self.id
+                                    orderItem.orderID = order.id
+                                    
+                                    order.orderItems.append(orderItem)
+                                    
+                                    self.print_action(string: "**** FKSupplierDispatch: Order Item Object Initialized****")
+                                    
+                                    
+                                }
+                            }
+                            
+                        }
+                        
+                        
+                        current_orders.append(order)
+                        
+                    }
+                    
+                    self.unprocessedOrders.append(current_orders)
+                    current_orders.removeAll()
+                    
+                }
+                
+            }
+            
+            
+            self.print_unprocessed_orders()
+            
+            DispatchQueue.main.async {
+                // POST NOTIFICATION FOR COMPLETION
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCHED_ORDERS_UNPROCESSED), object: nil)
+                
+            }
+        })
+    }
+    
+    
+    // (F) Observe Fetch All Processed Orders From Firebase Database by Date
+    
+    func observeFetchProcessedOrdersFor(date: String){
+        
+        // Call Observe on Reference
+        let ref = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.id).child("FKOrdersProcessed").child(date)
+        
+        ref.observe(DataEventType.value, with: { (snapshot) in
+            
+            // Get Data From Real-time Database
+            let postDict = snapshot.value as? NSDictionary
+            
+            // No Item Found Return Failed to Find
+            if(postDict == nil){
+                self.print_action(string: "**** FKSupplierDispatch: Orders were not found/empty. ****")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_OBSERVE_ORDERS_EMPTY), object: nil)
+                }
+                
+            }
+            else{
+                self.completedOrders.removeAll()
+                
+                for child in snapshot.children.allObjects as! [DataSnapshot]  {
+                    
+                    // Create Order
+                    self.print_action(string: "**** FKSupplierDispatch: order sucessfully found! ****")
+                    let order = FKOrder()
+                    
+                    for grandchild in child.children.allObjects as! [DataSnapshot] {
+                        
+                        // Setup Order Object Fields
+                        if(grandchild.key == "id"){
+                            order.id = grandchild.value as! String
+                            order.dispatchID = self.id
+                        }
+                        else if(grandchild.key == "orderDateTime"){
+                            order.orderDateTime = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderStage"){
+                            order.orderStage = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderPaymentMethod"){
+                            order.orderPaymentMethod = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "orderTotalPrice"){
+                            order.orderTotalPrice = Double(grandchild.value as! String)!
+                        }
+                        else if(grandchild.key == "customerPhoneNumber"){
+                            order.customerPhoneNumber = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "supplierID"){
+                            order.supplierID = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "customerFCMToken"){
+                            order.customerFCMToken = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "country"){
+                            order.country = grandchild.value as! String
+                        }
+                        else if(grandchild.key == "FKOrderItems"){
+                            
+                            for data in grandchild.children.allObjects as! [DataSnapshot] {
+                                
+                                self.print_action(string: "**** FKSupplierDispatch: items sucessfully found! ****")
+                                
+                                // Create FKMenuItem
+                                let orderItem = FKOrderItem()
+                                
+                                // Parse Data to new Item
+                                let orderItemData = data.value as? NSDictionary
+                                
+                                // Init Order Item Object
+                                
+                                orderItem.id =  orderItemData!["id"] as! String
+                                orderItem.itemName_en = orderItemData!["itemName_en"] as! String
+                                orderItem.itemName_ar = orderItemData!["itemName_ar"] as! String
+                                orderItem.itemPrice = Double(orderItemData!["itemPrice"] as! String)!
+                                orderItem.instructions = orderItemData!["instructions"] as! String
+                                orderItem.quantity = Int(orderItemData!["quantity"] as! String)!
+                                orderItem.country = orderItemData!["country"] as! String
+                                orderItem.dispatchID = self.id
+                                orderItem.orderID = order.id
+                                
+                                order.orderItems.append(orderItem)
+                                
+                                self.print_action(string: "**** FKSupplierDispatch: Order Item Object Initialized****")
+                                
+                                
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        
+                    }
+                    
+                    
+                    self.completedOrders.append(order)
+                    
+                    
+                }
+                
+            }
+            
+       
+            self.print_complete_orders()
+            
+            DispatchQueue.main.async {
+                // POST NOTIFICATION FOR COMPLETION
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_FETCHED_ORDERS), object: nil)
+                
+            }
+        })
+        
+        
+        
+        
+    }
+    
+    
     // MARK:  Firebase Messenging Functions
     
     //(A) HTTP POST TO FIREBASE SERVER
@@ -348,6 +601,21 @@ class FKSupplierDispatch : NSObject {
         }
     }
     
+    
+    
+    // (E) Process All Unprocessed order
+    func processAllOrdersToFireBaseDB(){
+        
+        self.unprocessedDates.removeAll()
+        for order_tray in self.unprocessedOrders{
+            for order in order_tray{
+                order.uploadProcessedOrderToFirebaseDB()
+            }
+        }
+        self.unprocessedOrders.removeAll()
+        
+    }
+    
     //MARK: Helper Functions
     
     func normalizeOrderItems(){
@@ -382,6 +650,169 @@ class FKSupplierDispatch : NSObject {
         }
         print("*************************************************************************************************************************\n\n")
     }
+    
+    func print_complete_orders(){
+        print("\n\n****************************************** FKSupplierDispatch Completed Orders ****************************************** ")
+        print("PENDING ORDER COUNT COUNT: \(self.completedOrders.count)\n")
+        for order in self.completedOrders {
+            order.print_order_items()
+        }
+        print("*************************************************************************************************************************\n\n")
+    }
+    
+    func print_unprocessed_orders(){
+        print("\n\n****************************************** FKSupplierDispatch Completed Orders ****************************************** ")
+        
+        var count = 0
+        for order_tray in self.unprocessedOrders{
+            count = count + order_tray.count
+        }
+        
+        print("UNPROCESSED ORDER COUNT: \(count)\n")
+        
+        
+        var day_index = 0
+        
+        for day in self.unprocessedDates {
+            
+            print("DAY : \(day)")
+            
+            for order in self.unprocessedOrders[day_index] {
+                
+                order.print_order_items()
+                
+            }
+            
+            day_index = day_index + 1
+        }
+        print("*************************************************************************************************************************\n\n")
+    }
+    
+    
+    func getCashBalance() -> Double{
+        
+        var cashBalance = 0.0
+        var date_index = 0
+        
+        for _ in self.unprocessedDates {
+            for order in self.unprocessedOrders[date_index]{
+                if(order.orderPaymentMethod == "CASH"){
+                    cashBalance = cashBalance + order.orderTotalPrice
+                }
+            }
+            date_index = date_index + 1
+        }
+        
+        return cashBalance
+    }
+    
+    func getKNETBalance() -> Double{
+        
+        var knetBalance = 0.0
+        var date_index = 0
+        
+        for _ in self.unprocessedDates {
+            for order in self.unprocessedOrders[date_index]{
+                if(order.orderPaymentMethod == "KNET"){
+                    knetBalance = knetBalance + order.orderTotalPrice
+                }
+            }
+            date_index = date_index + 1
+        }
+        
+        return knetBalance
+    }
+    
+    func getTotalBalance() -> Double {
+        return self.getCashBalance() + self.getKNETBalance()
+    }
+    
+    func getTotalNet(creditRate: Double, fixedRate: Double) -> Double {
+        
+        if(fixedRate == 0.0){
+            let rev = self.getTotalBalance() * creditRate
+            let net = self.getKNETBalance() - rev
+            return net
+        }
+        else{
+            var count = 0
+            for order_tray in self.unprocessedOrders{
+                count = count + order_tray.count
+            }
+            let rev = fixedRate * Double(count)
+            let net = self.getKNETBalance() - rev
+            return net
+        }
+    }
+    
+    
+    
+    func getCashBalanceForDay(date: String) -> Double{
+        
+        var cashBalance = 0.0
+        var date_index = 0
+        
+        for day in self.unprocessedDates {
+            if(day == date){
+                for order in self.unprocessedOrders[date_index]{
+                    if(order.orderPaymentMethod == "CASH"){
+                        cashBalance = cashBalance + order.orderTotalPrice
+                    }
+                }
+            }
+            date_index = date_index + 1
+        }
+        
+        return cashBalance
+    }
+    
+    func getKNETBalanceForDay(date: String) -> Double{
+        
+        var knetBalance = 0.0
+        var date_index = 0
+        
+        for day in self.unprocessedDates {
+            if(day == date){
+            for order in self.unprocessedOrders[date_index]{
+                if(order.orderPaymentMethod == "KNET"){
+                    knetBalance = knetBalance + order.orderTotalPrice
+                }
+            }
+            }
+            date_index = date_index + 1
+        }
+        
+        return knetBalance
+    }
+    
+    func getTotalBalanceForDay(date: String) -> Double {
+        return self.getCashBalanceForDay(date: date) + self.getKNETBalanceForDay(date: date)
+    }
+    
+    func getTotalNetForDay(creditRate: Double, fixedRate: Double, date: String) -> Double {
+        
+        if(fixedRate == 0.0){
+            let rev = self.getTotalBalanceForDay(date:date) * creditRate
+            let net = self.getKNETBalanceForDay(date:date) - rev
+            return net
+        }
+        else{
+            var count = 0
+            var index = 0
+            for day in self.unprocessedDates{
+                if day == date {
+                    count = self.unprocessedOrders[index].count
+                }
+                index = index + 1
+            }
+            let rev = fixedRate * Double(count)
+            let net = self.getKNETBalanceForDay(date:date) - rev
+            return net
+        }
+    }
+    
+    
+    
     
     func playSound() {
         guard let url = Bundle.main.url(forResource: "alert", withExtension: "mp3") else { return }

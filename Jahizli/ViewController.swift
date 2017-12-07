@@ -29,86 +29,15 @@ class ViewController: UIViewController {
         print("Debug: Proceed to testing.")
        
         user = FKCustomer()
-        user.isUserSignedIn()
+        user.getUserCountryLocation()
+        //user.isUserSignedIn()
         
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestAccepted), name: Notification.Name(self.NOTIFICATION_ORDER_ACCEPTED ), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestReady), name: Notification.Name(self.NOTIFICATION_ORDER_READY ), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleRequestComplete), name: Notification.Name(self.NOTIFICATION_ORDER_COMPLETED), object: nil)
         
-        
-      
-        let supplier = FKSupplier()
-        let logo = UIImage(named: "logo")
-        let display = UIImage(named: "displayImage")
-        
-        let club = UIImage(named: "club")
-        let cake = UIImage(named: "cake")
-        let drink = UIImage(named: "water")
-        
-
-        
-        supplier.setupSupplier(name_en: "Sushi Club", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"], country: "Kuwait", category: "Healthy", dispatchID: "-KwfnNinXARGkU2sewDy")
-        
-        supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
-        supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
-        supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
-        
-        
-        supplier.setupSupplier(name_en: "Baqala", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"], country: "Kuwait", category: "Healthy", dispatchID: "-KwfnNinXARGkU2sewDy")
-        
-        supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
-        supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
-        supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
-   
-
-       
-        
-       // let dispatch = FKSupplierDispatch()
-        //dispatch.setupSupplierDisptach(supplierID:"-KxdDOYi80cZsbIwJhHK", country: "Kuwait")
-        
-        
-
- 
-        
-        
-        
-        
-     // supplier = FKSupplier()
-     // supplier.id = "-KwfHDulDICJPIFpfypA"
-     // supplier.observeFetchSupplierFromFirebaseDB()
-        
-        
-        
-      //supplier.fetchLogoImageFromFirebaseStorage()
-      //supplier.fetchDisplayImageFromFirebaseStorage()
-         
-        
- 
-        // Debuging Model Classes
-        
-        /*
-       
-        let supplier = FKSupplier()
-        let logo = UIImage(named: "logo")
-        let display = UIImage(named: "displayImage")
-       
-        let club = UIImage(named: "club")
-        let cake = UIImage(named: "cake")
-        let drink = UIImage(named: "water")
-        
-        supplier.setupSupplier(name_en: "Grill Town", name_ar: "***", status: "Available", hours: "8am-12pm", info_en: "We have everything your heart desires!", info_ar: "***", phone_number: "99166300", balance: 0.0, creditRate: 10.0, logo: logo?.jpeg, displayImage: display?.jpeg, categories_en: ["Main","Drinks","Desert"], categories_ar: ["Main","Drinks","Desert"])
-
-        supplier.menu.addMenuItem(itemName_en: "Club Sandwitch", itemName_ar: "***", itemInfo_en: "Tasty!", itemInfo_ar: "***", itemImage: club?.jpeg, itemPrice: 2.00, itemCategory: "Main")
-        supplier.menu.addMenuItem(itemName_en: "Water", itemName_ar: "***", itemInfo_en: "Refreshing!", itemInfo_ar: "***", itemImage: drink?.jpeg, itemPrice: 0.50, itemCategory: "Drinks")
-        supplier.menu.addMenuItem(itemName_en: "Cake", itemName_ar: "***", itemInfo_en: "Yummy!", itemInfo_ar: "***", itemImage: cake?.jpeg, itemPrice: 3.50, itemCategory: "Desert")
- 
-         
-     */
-        
-        
-        
-        
+    
         
         
         
@@ -149,62 +78,36 @@ class ViewController: UIViewController {
         
         
         let now = Date()
-        let club = UIImage(named: "club")
         let item = FKMenuItem()
         
-        item.itemName_en = "Kabab"
-        item.itemInfo_ar = "**"
+        item.itemName_en = "Mighty Zinger"
+        item.itemInfo_ar = "مايتي زينقر"
         item.itemInfo_en = "Yummy!"
         item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 2.00
+     
+        item.itemPrice = 1.2
         item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
+
         
         order = FKOrder()
         
         
-        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: self.user.phoneNumber, supplierID: "-KxdDOYi80cZsbIwJhHK", dispatchID: "-KxdDnXd98W3NKAmGAl4", customerFCMToken: self.user.fcmToken, country: "Kuwait")
+        order.setupOrder(orderDateTime: now, orderStage: "PENDING", orderPaymentMethod: "KNET", customerPhoneNumber: self.user.phoneNumber, supplierID: "-KyHZnXjeBGI11vY2Urv", dispatchID: "-KyHZndMOirc5wySserg", customerFCMToken: self.user.fcmToken, country: "Kuwait")
         
         
         order.addOrderItemToOrder(item: item, quantity: 1, instructions: "No tomatoes please!")
         
-        item.itemName_en = "Shwarma"
+        item.itemName_en = "Fries"
+        item.itemInfo_ar = "البطاطس"
+        item.itemInfo_en = "Classic KFC Fries"
         item.itemInfo_ar = "**"
-        item.itemInfo_en = "With tomatoes, taheena and the best sauce in town!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 2.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
+        item.itemPrice = 0.5
+        item.itemCategory = "Sides"
+    
         
-        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Extra taheena sauce.")
+        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "No instruction given!")
         
-        item.itemName_en = "Fatoosh"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "All fresh and green, as healthy as it gets!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 1.00
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order.addOrderItemToOrder(item: item, quantity: 3, instructions: "No instructions provided.")
-        
-        item.itemName_en = "Pepsi"
-        item.itemInfo_ar = "**"
-        item.itemInfo_en = "Yummy!"
-        item.itemInfo_ar = "**"
-        item.itemImage = club?.jpeg
-        item.itemPrice = 0.500
-        item.itemCategory = "Sandwitches"
-        item.path = ""
-        item.menuID = ""
-        
-        order.addOrderItemToOrder(item: item, quantity: 2, instructions: "Room temprature.")
+
         
         
         order.uploadNewOrderToFirebaseDB()

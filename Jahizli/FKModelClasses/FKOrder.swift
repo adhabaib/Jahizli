@@ -34,7 +34,7 @@ class FKOrder : NSObject {
     let NOTIFICATION_OBSERVE = "FKOrder_Observe_Found"
     let NOTIFICATION_FETCHED_ITEMS = "FKOrder_Observe_Order_Items"
     let NOTIFICATION_UPDATED = "FKOrder_Updated_Order"
-    
+    let NOTIFICATION_PROCESS = "FKOrder_Updated_Processed"
     
     //MARK: Initializer Method
     func setupOrder(orderDateTime: Date, orderStage: String, orderPaymentMethod: String, customerPhoneNumber: String, supplierID: String, dispatchID: String, customerFCMToken: String, country: String){
@@ -58,6 +58,7 @@ class FKOrder : NSObject {
         let ref =  Database.database().reference()
         let orderRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").childByAutoId()
         self.id = orderRef.key
+        let orderRef_2 = ref.child(self.country).child("FKCustomers").child(self.customerPhoneNumber).child("InCompleted").child(self.id)
     
 
         // Setup JSON Object
@@ -86,6 +87,7 @@ class FKOrder : NSObject {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                orderRef_2.setValue(order,withCompletionBlock:   { (NSError, FIRDatabaseReference) in })
             
             }
             
@@ -97,18 +99,12 @@ class FKOrder : NSObject {
     //* (B) Upload Completed Order To Real-time Database
     func uploadCompletedOrderToFirebaseDB(){
         
-        // Remove Order From Waiting List
         
-        // Remove Waiting order From Firebase -> Removes All order items
-    Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
-        
-
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderRef = ref.child(self.country).child("FKOrdersCompleted").child(self.dispatchID).childByAutoId()
-        self.id = orderRef.key
-        
-        
+        let orderRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersUnProcessed").child(self.getDateOnlyFromDateTime()).child(self.id)
+        let orderRef_2 = ref.child(self.country).child("FKCustomers").child(self.customerPhoneNumber).child("Completed").child(self.id)
+    
         // Setup JSON Object
         let order = [
             "id" : self.id,
@@ -136,19 +132,77 @@ class FKOrder : NSObject {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
                 
+                // Remove Waiting order From Firebase -> Removes All order items
+                Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id).removeValue()
+                
+                    orderRef_2.setValue(order,withCompletionBlock:   { (NSError, FIRDatabaseReference) in})
+                
+                Database.database().reference().child(self.country).child("FKCustomers").child(self.customerPhoneNumber).child("InCompleted").child(self.id).removeValue()
+                
             }
             
         })
         
         
+        
+        
     }
     
+    
+    //* (BII) Upload Completed Processed Order To Real-time Database
+    func uploadProcessedOrderToFirebaseDB(){
+        
+        
+        // Create/Retrieve Reference
+        let ref =  Database.database().reference()
+        let orderRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersProcessed").child(self.getDateOnlyFromDateTime()).child(self.id)
+     
+        
+        // Setup JSON Object
+        let order = [
+            "id" : self.id,
+            "orderDateTime" : self.orderDateTime,
+            "orderStage" : "PROCESSED",
+            "orderPaymentMethod" : self.orderPaymentMethod,
+            "orderTotalPrice" : self.getTotalPriceFromOrderItems(),
+            "customerPhoneNumber" : self.customerPhoneNumber,
+            "supplierID" : self.supplierID,
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
+        ]
+        
+        // Save Object to Real-time Database
+        
+        
+        orderRef.setValue(order,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
+            
+            self.print_action(string: "**** FKOrder: OLD order uploaded to Firebase Realtime-Database! ****\n\(order)")
+            
+            self.uploadAllProcessedOrderItemsToFireBaseDB()
+            
+            // POST NOTIFICATION FOR COMPLETION
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_PROCESS), object: nil)
+                
+                // Remove Unprocessed order From Firebase -> Removes All order items
+                Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersUnProcessed").child(self.getDateOnlyFromDateTime()).child(self.id).removeValue()
+                
+        
+            }
+            
+        })
+        
+        
+        
+        
+    }
     
     //* (C) Upload All Order Items to Firebase Database
     func uploadAllNewOrderItemsToFireBaseDB(){
         for orderItem in self.orderItems {
             orderItem.orderID = self.id
-            orderItem.uploadNewOrderItemToFireBaseDB()
+            orderItem.uploadNewOrderItemToFireBaseDB(customerPhoneNumber: self.customerPhoneNumber)
         }
     }
     
@@ -156,7 +210,15 @@ class FKOrder : NSObject {
     func uploadAllCompletedOrderItemsToFireBaseDB(){
         for orderItem in self.orderItems {
             orderItem.orderID = self.id
-            orderItem.uploadCompletedOrderItemToFireBaseDB()
+            orderItem.uploadCompletedOrderItemToFireBaseDB(customerPhoneNumber: self.customerPhoneNumber, date: self.getDateOnlyFromDateTime())
+        }
+    }
+    
+    //* (DII) Upload All Completed Order Items to Firebase Database
+    func uploadAllProcessedOrderItemsToFireBaseDB(){
+        for orderItem in self.orderItems {
+            orderItem.orderID = self.id
+            orderItem.uploadProcessedOrderItemToFireBaseDB(date: self.getDateOnlyFromDateTime())
         }
     }
     
@@ -167,6 +229,9 @@ class FKOrder : NSObject {
        
         print_action(string: "FKOrder: Order updating...")
         let ref  = Database.database().reference().child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.id)
+        
+         let ref_2  = Database.database().reference().child(self.country).child("FKCustomers").child(self.customerPhoneNumber).child("InCompleted").child(self.id)
+        
         
         ref.updateChildValues([
             "id" : self.id,
@@ -188,6 +253,29 @@ class FKOrder : NSObject {
                 }
                 
         })
+        
+        
+        ref_2.updateChildValues([
+            "id" : self.id,
+            "orderDateTime" : self.orderDateTime,
+            "orderStage" : self.orderStage,
+            "orderPaymentMethod" : self.orderPaymentMethod,
+            "orderTotalPrice" : String(self.orderTotalPrice),
+            "customerPhoneNumber" : self.customerPhoneNumber,
+            "supplierID" : self.supplierID,
+            "dispatchID" : self.dispatchID,
+            "customerFCMToken" : self.customerFCMToken,
+            "country" : self.country
+            ], withCompletionBlock: { (NSError, FIRDatabaseReference) in //update the book in the db
+                
+                // POST NOTIFICATION FOR COMPLETION
+                self.print_order()
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPDATED), object: nil)
+                }
+                
+        })
+        
     }
     
     
@@ -246,6 +334,18 @@ class FKOrder : NSObject {
         print("\n************* FKOrder Log *************")
         print(string)
         print("******************************************\n")
+        
+    }
+    
+    func getDateOnlyFromDateTime() -> String{
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss"
+        let dateData = dateFormatter.date(from:self.orderDateTime)
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: dateData!)
+    
+        return dateString
         
     }
     

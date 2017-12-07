@@ -45,12 +45,13 @@ class FKOrderItem : NSObject {
 
     //MARK:  Firebase Realtime-Database function
     //* (A) Upload Order Item To Firebase Realtime-Storage
-    func uploadNewOrderItemToFireBaseDB(){
+    func uploadNewOrderItemToFireBaseDB(customerPhoneNumber: String){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
         let orderItemRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersWaiting").child(self.orderID).child("FKOrderItems").childByAutoId()
         self.id = orderItemRef.key
+             let orderRef_2 = ref.child(self.country).child("FKCustomers").child(customerPhoneNumber).child("InCompleted").child(self.orderID).child("FKOrderItems").child(self.id)
         
         // Setup JSON Object
         let item = [
@@ -74,6 +75,7 @@ class FKOrderItem : NSObject {
             // POST NOTIFICATION FOR COMPLETION
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                orderRef_2.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in })
             }
             
         })
@@ -81,13 +83,52 @@ class FKOrderItem : NSObject {
     }
     
     //* (B) Upload Order Item To Firebase Realtime-Storage
-    func uploadCompletedOrderItemToFireBaseDB(){
+    func uploadCompletedOrderItemToFireBaseDB(customerPhoneNumber: String, date: String){
         
         // Create/Retrieve Reference
         let ref =  Database.database().reference()
-        let orderItemRef = ref.child(self.country).child("FKOrdersCompleted").child(self.dispatchID).child(self.orderID).child("FKOrderItems").childByAutoId()
-        self.id = orderItemRef.key
+        let orderItemRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersUnProcessed").child(date).child(self.orderID).child("FKOrderItems").child(self.id)
+        let orderRef_2 = ref.child(self.country).child("FKCustomers").child(customerPhoneNumber).child("Completed").child(self.orderID).child("FKOrderItems").child(self.id)
+
+      
+        // Setup JSON Object
+        let item = [
+            "id" : self.id,
+            "itemName_en" : self.itemName_en,
+            "itemName_ar" : self.itemName_ar,
+            "itemPrice" : String(self.itemPrice),
+            "quantity" : String(self.quantity),
+            "instructions" : self.instructions,
+            "orderID" : self.orderID,
+            "dispatchID" : self.dispatchID,
+            "country" : self.country
+        ]
         
+        // Save Object to Real-time Database
+        
+        orderItemRef.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in
+            
+            self.print_action(string: "**** FKOrderItem: item uploaded to Firebase Realtime-Database! ****\n\(item)")
+            
+            // POST NOTIFICATION FOR COMPLETION
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(self.NOTIFICATION_UPLOAD), object: nil)
+                orderRef_2.setValue(item,withCompletionBlock:   { (NSError, FIRDatabaseReference) in})
+            }
+            
+        })
+        
+    }
+    
+    
+    //* (BII) Upload Order Item To Firebase Realtime-Storage
+    func uploadProcessedOrderItemToFireBaseDB(date: String){
+        
+        // Create/Retrieve Reference
+        let ref =  Database.database().reference()
+        let orderItemRef = ref.child(self.country).child("FKSupplierDispatches").child(self.dispatchID).child("FKOrdersProcessed").child(date).child(self.orderID).child("FKOrderItems").child(self.id)
+      
+
         // Setup JSON Object
         let item = [
             "id" : self.id,
@@ -125,6 +166,8 @@ class FKOrderItem : NSObject {
         print("******************************************\n")
         
     }
+    
+
     
     
 }

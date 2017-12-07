@@ -8,9 +8,12 @@
 
 import Foundation
 import Firebase
+import MapKit
+import CoreLocation
+
 
 // FKCustomer Class
-class FKCustomer: NSObject, MessagingDelegate {
+class FKCustomer: NSObject, MessagingDelegate, CLLocationManagerDelegate{
     
     //MARK: public variables
     var verificationId: String = ""
@@ -18,6 +21,9 @@ class FKCustomer: NSObject, MessagingDelegate {
     var loggedIn: Bool = false
     var fcmToken: String = ""
     var incomplete_orders = [FKOrder]()
+    
+    
+    var locationManager = CLLocationManager()
 
     //MARK: Firebase Authentication functions
     
@@ -29,6 +35,7 @@ class FKCustomer: NSObject, MessagingDelegate {
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
             if let error = error {
                 print(error.localizedDescription)
+                print(error)
                 return
             }
             // Sign in using the verificationID and the code sent to the user
@@ -109,6 +116,62 @@ class FKCustomer: NSObject, MessagingDelegate {
         }
         
     }
+    
+    
+    //(F) Get User Country Location
+    func getUserCountryLocation(){
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.requestLocation()
+    }
+    
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            print("Found user's location: \(location)")
+            self.geoDecodeToCountry(pdblLatitude: String(location.coordinate.latitude), withLongitude: String(location.coordinate.longitude))
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Failed to find user's location: \(error.localizedDescription)")
+    }
+    
+ 
+    func geoDecodeToCountry(pdblLatitude: String, withLongitude pdblLongitude: String){
+        
+        var center : CLLocationCoordinate2D = CLLocationCoordinate2D()
+        let lat: Double = Double("\(pdblLatitude)")!
+        let lon: Double = Double("\(pdblLongitude)")!
+        let ceo: CLGeocoder = CLGeocoder()
+        center.latitude = lat
+        center.longitude = lon
+        
+        let loc: CLLocation = CLLocation(latitude:center.latitude, longitude: center.longitude)
+        
+        ceo.reverseGeocodeLocation(loc, completionHandler:
+            {(placemarks, error) in
+                if (error != nil)
+                {
+                    print("FKCustomer: Reverse geodcode fail: \(error!.localizedDescription)")
+                }
+                
+                let pm = placemarks! as [CLPlacemark]
+                
+                if pm.count > 0 {
+                    let pm = placemarks![0]
+                    if pm.country != nil {
+                        print(pm.country!)
+                        String(describing: pm.country)
+                    }
+                }
+                
+        })
+        
+    }
+    
         
 
 }

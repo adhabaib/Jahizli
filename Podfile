@@ -12,6 +12,8 @@ pod ‘Firebase/Storage’
 pod ‘Firebase/Auth’
 pod ‘Firebase/Messaging’
 pod ‘FirebaseInstanceID’, ‘2.0.4’
+pod ‘FirebaseUI/Storage’
+pod ‘SwiftHEXColors’
 
 
   target 'JahizliTests' do
